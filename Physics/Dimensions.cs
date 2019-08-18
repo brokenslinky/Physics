@@ -16,6 +16,8 @@ namespace Physics
         public static Scalar operator *(double a, Scalar b) { return new Scalar(a * b.value); }
         public static Scalar operator *(Scalar b, double a) { return new Scalar(a * b.value); }
         public static Scalar operator /(Scalar a, double b) { return new Scalar(a.value / b); }
+
+        public static double operator *(Scalar a, Scalar b) { return a.value * b.value; }
         public static double operator /(Scalar a, Scalar b) { return a.value / b.value; }
         #endregion
     }

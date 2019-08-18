@@ -65,5 +65,24 @@ namespace Physics
     {
         const double G = 0.000000000066743015;
 
+        public Gravity (Particle A, Particle B)
+        {
+            this.A = A; this.B = B;
+        }
+
+        public Force interactionForce()
+        {
+            return interactionForce(A, B);
+        }
+
+        public Force interactionForce(Particle A, Particle B)
+        {
+            Position AtoB = B.position - A.position;
+            double distance = AtoB.Magnitude();
+            double magnitudeOfForce = G * (A.mass * B.mass) / (distance * distance);
+            return new Force(magnitudeOfForce * AtoB.Direction());
+        }
+
+
     }
 }
