@@ -1,2 +1,2 @@
 # Physics
-Physics engine with units
+Physics library with units for .NET Standard
