@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Physics
 {
-
     public class Particle
     {
         public Mass mass = new Mass(Double.NaN);
@@ -14,6 +13,10 @@ namespace Physics
         public Particle (Mass mass)
         {
             this.mass = mass;
+        }
+
+        public Particle ()
+        {
         }
 
         public Velocity velocity() { return momentum / mass; }

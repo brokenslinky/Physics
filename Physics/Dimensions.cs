@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Physics
 {
@@ -86,7 +84,7 @@ namespace Physics
     {
         public double[] value = { 0.0, 0.0, 0.0 };
 
-        public Vector_3d(double x, double y, double z)
+        public Vector_3d(double x = 0.0, double y = 0.0, double z = 0.0)
         {
             this.value[0] = x; this.value[1] = y; this.value[2] = z;
         }
@@ -141,7 +139,7 @@ namespace Physics
 
     public class Position : Vector_3d
     {
-        public Position(double x, double y, double z) : base(x, y, z) { }
+        public Position(double x = 0.0, double y = 0.0, double z = 0.0) : base(x, y, z) { }
         public Position(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
 
         public static Position operator +(Position a, Position b)
@@ -160,7 +158,7 @@ namespace Physics
 
     public class Velocity : Vector_3d
     {
-        public Velocity(double x, double y, double z) : base(x, y, z) { }
+        public Velocity(double x = 0.0, double y = 0.0, double z = 0.0) : base(x, y, z) { }
         public Velocity(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
 
         public static Velocity operator +(Velocity a, Velocity b)
@@ -188,7 +186,7 @@ namespace Physics
 
     public class Acceleration : Vector_3d
     {
-        public Acceleration(double x, double y, double z) : base(x, y, z) { }
+        public Acceleration(double x = 0.0, double y = 0.0, double z = 0.0) : base(x, y, z) { }
         public Acceleration(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
 
         public static Acceleration operator *(double n, Acceleration a)
@@ -205,7 +203,7 @@ namespace Physics
 
     public class Force : Vector_3d
     {
-        public Force(double x, double y, double z) : base(x, y, z) { }
+        public Force(double x = 0.0, double y = 0.0, double z = 0.0) : base(x, y, z) { }
         public Force(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
 
         public static Force operator +(Force a, Force b)
