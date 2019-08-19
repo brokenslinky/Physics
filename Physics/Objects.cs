@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Physics
@@ -9,6 +10,7 @@ namespace Physics
         public Mass mass = new Mass(Double.NaN);
         public Position position = new Position(0.0, 0.0, 0.0);
         public Momentum momentum = new Momentum(0.0, 0.0, 0.0);
+        public List<Interaction> interactions = new List<Interaction>();
 
         public Particle (Mass mass)
         {
