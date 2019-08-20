@@ -18,12 +18,12 @@ namespace Physics
 
             // This method needs to be overloaded for each interaction type
 
-            throw new System.NotImplementedException("Force() not defined for this Interaction");
+            throw new System.NotImplementedException("InteractionForce() not defined for this Interaction");
         }
         public Force InteractionForce(Particle x, Particle y)
         {
             // Needs to be overridden by every interaction type
-            throw new System.NotImplementedException("Force() not defined for this Interaction");
+            throw new System.NotImplementedException("InteractionForce() not defined for this Interaction");
         }
     }
 
@@ -63,24 +63,27 @@ namespace Physics
 
     public class Gravity : Interaction
     {
-        const double G = 0.000000000066743015;
+        const double G = 6.6743015E-11; // 0.000000000066743015;
 
         public Gravity (Particle A, Particle B)
         {
             this.A = A; this.B = B;
         }
 
-        public Force interactionForce()
+        public new Force InteractionForce()
         {
-            return interactionForce(A, B);
+            return InteractionForce(A, B);
         }
 
-        public Force interactionForce(Particle A, Particle B)
+        public new static Force InteractionForce(Particle A, Particle B)
         {
             Position AtoB = B.position - A.position;
             double distance = AtoB.Magnitude();
             double magnitudeOfForce = G * (A.mass * B.mass) / (distance * distance);
-            return new Force(magnitudeOfForce * AtoB.Direction());
+            Force force = new Force(magnitudeOfForce * AtoB.Direction());
+            if (double.IsNaN(force.Magnitude()))
+                return new Force();
+            return force;
         }
 
 

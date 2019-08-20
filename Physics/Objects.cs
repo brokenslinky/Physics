@@ -33,7 +33,13 @@ namespace Physics
             momentum += changeInMomentum;
             position += changeInPosition;
         }
-        public void Iterate(Time timeStep) { Iterate(timeStep, new Force(0.0, 0.0, 0.0)); }
+        public void Iterate(Time timeStep)
+        {
+            Force netForce = new Force();
+            foreach (Interaction interaction in interactions)
+                netForce += interaction.InteractionForce();
+            Iterate(timeStep, netForce);
+        }
     }
 
     public class CelestialBody : Particle
