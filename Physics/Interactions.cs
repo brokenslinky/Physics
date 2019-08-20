@@ -29,33 +29,37 @@ namespace Physics
 
     public class Spring : Interaction
     {
-        public double springRate;
-        public double restLength;
+        public Scalar springRate = new Scalar(double.PositiveInfinity, 
+            DerivedUnits.Force / DerivedUnits.Distance);
+        public Scalar restLength = new Scalar(0.0, DerivedUnits.Distance);
 
         public Spring(Particle A, Particle B, double springRate = double.MaxValue, double restLength = 0.0)
         {
-            this.A = A; this.B = B; this.springRate = springRate; this.restLength = restLength;
+            this.A = A; this.B = B;
+            this.springRate.value = springRate; this.restLength.value = restLength;
         }
 
-        public Spring(double rate = double.MaxValue, double restLength = 0.0)
+        public Spring(double springRate = double.MaxValue, double restLength = 0.0)
         {
-            springRate = rate;
-            this.restLength = restLength;
+            this.springRate.value = springRate;
+            this.restLength.value = restLength;
         }
 
-        public Force InteractionForce()
+        public new Vector InteractionForce()
         {
             return InteractionForce(A, B);
         }
 
-        public Force InteractionForce(Position xToY) 
+        public new Vector InteractionForce(Vector xToY) 
         {
             // <summary> returns force on x due to y </summary>
-            double magnitude = springRate * (xToY.Magnitude() - restLength);
-            return new Force(magnitude * xToY.Direction());
+            if (xToY.units != DerivedUnits.Distance)
+                throw new UnitMismatchException();
+            Scalar magnitude = springRate * (xToY.Magnitude() - restLength);
+            return magnitude * xToY.Direction();
         }
 
-        public Force InteractionForce(Particle x, Particle y)
+        public new Vector InteractionForce(Particle x, Particle y)
         {
             return InteractionForce(y.position - x.position);
         }
@@ -63,25 +67,30 @@ namespace Physics
 
     public class Gravity : Interaction
     {
-        const double G = 6.6743015E-11; // 0.000000000066743015;
+        const double G_value = 6.6743015E-11; // 0.000000000066743015;
+        const double G_units =
+            DerivedUnits.Force * DerivedUnits.Distance * DerivedUnits.Distance /
+            (DerivedUnits.Mass * DerivedUnits.Mass);
 
         public Gravity (Particle A, Particle B)
         {
             this.A = A; this.B = B;
         }
 
-        public new Force InteractionForce()
+        public new Vector InteractionForce()
         {
             return InteractionForce(A, B);
         }
 
-        public new static Force InteractionForce(Particle A, Particle B)
+        public new static Vector InteractionForce(Particle A, Particle B)
         {
-            Position AtoB = B.position - A.position;
-            double distance = AtoB.Magnitude();
-            double magnitudeOfForce = G * (A.mass * B.mass) / (distance * distance);
-            Force force = new Force(magnitudeOfForce * AtoB.Direction());
-            if (double.IsNaN(force.Magnitude()))
+            Scalar G = new Scalar(G_value, G_units);
+
+            Vector AtoB = B.position - A.position;
+            Scalar distance = AtoB.Magnitude();
+            Scalar magnitudeOfForce = G * (A.mass * B.mass) / (distance * distance);
+            Vector force = magnitudeOfForce * AtoB.Direction();
+            if (double.IsNaN(force.Magnitude().value))
                 return new Force();
             return force;
         }
