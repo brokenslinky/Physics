@@ -10,29 +10,53 @@ namespace Physics
         Time = 3,
         Mass = 5
     }
-    public static class DerivedUnits
+
+    public class DerivedUnits
     {
-        public const double Unitless = (double)BaseUnits.Unitless;
-        public const double Distance = (double)BaseUnits.Distance;
-        public const double Time = (double)BaseUnits.Time;
-        public const double Mass = (double)BaseUnits.Mass;
-        public const double Momentum = Mass * Distance / Time;
-        public const double Force = Momentum / Time;
-        public const double Energy = Force * Distance;
+        public static readonly DerivedUnits Unitless = new DerivedUnits(BaseUnits.Unitless);
+        public static readonly DerivedUnits Distance = new DerivedUnits(BaseUnits.Distance);
+        public static readonly DerivedUnits Time = new DerivedUnits(BaseUnits.Time);
+        public static readonly DerivedUnits Mass = new DerivedUnits(BaseUnits.Mass);
+        public static readonly DerivedUnits Momentum = Mass * Distance / Time;
+        public static readonly DerivedUnits Force = Momentum / Time;
+        public static readonly DerivedUnits Energy = Force * Distance;
+
+        private double unitType = 1.0;
+
+        public DerivedUnits(BaseUnits baseUnit) { unitType = (double)baseUnit; }
+        public DerivedUnits(double unitValue) { this.unitType = unitValue; }
+        public DerivedUnits(DerivedUnits derivedUnits) { new DerivedUnits(derivedUnits.unitType); }
+        public DerivedUnits() { new DerivedUnits(Unitless); }
+
+        public static DerivedUnits operator *(DerivedUnits X, DerivedUnits Y)
+        {
+            return new DerivedUnits(X.unitType * Y.unitType);
+        }
+        public static DerivedUnits operator /(DerivedUnits X, DerivedUnits Y)
+        {
+            return new DerivedUnits(X.unitType / Y.unitType);
+        }
+        public static bool operator ==(DerivedUnits X, DerivedUnits Y)
+        {
+            return X.unitType == Y.unitType;
+        }
+        public static bool operator !=(DerivedUnits X, DerivedUnits Y)
+        {
+            return X.unitType != Y.unitType;
+        }
     }
 
     public class Scalar
     {
-        double _units = DerivedUnits.Unitless;
+        DerivedUnits _units = new DerivedUnits(1.0);
         double _value = 0.0;
 
         public double value { get { return _value; } set { _value = value; } }
-        public double units { get { return _units; } set { _units = value; } }
+        public DerivedUnits units { get { return _units; } set { _units = value; } }
 
-        public Scalar(double value = 0.0, double units = DerivedUnits.Unitless)
-        {
-            _value = value; _units = units;
-        }
+        public Scalar(double value, DerivedUnits units) { _value = value; _units = units; }
+        public Scalar(double value) { _value = value; }
+        public Scalar() { }
 
         public Scalar(Scalar scalar)
         {
@@ -97,20 +121,26 @@ namespace Physics
 
     public class Vector
     {
-        double _units = DerivedUnits.Unitless;
+        DerivedUnits _units = DerivedUnits.Unitless;
         public List<double> _values = new List<double>();
 
         public List<double> values { get { return _values; } set { _values = value; } }
 
         public void Add(double value) { _values.Add(value); }
 
-        public double units { get { return _units; } set { _units = value; } }
+        public DerivedUnits units { get { return _units; } set { _units = value; } }
 
-        public Vector(List<double> values = default(List<double>),
-            double units = DerivedUnits.Unitless)
+        public Vector(List<double> values, DerivedUnits units)
         {
             _values = values;
             _units = units;
+        }
+
+        public Vector(List<double> values) { _values = values; }
+
+        public Vector()
+        {
+            _values = new List<double>() { 0.0, 0.0, 0.0 };
         }
 
         public Scalar Magnitude()
@@ -195,7 +225,7 @@ namespace Physics
         }
         public static Vector operator /(Vector X, Scalar Y)
         {
-            Vector vector = X * Y.value;
+            Vector vector = X / Y.value;
             vector.units = X.units / Y.units;
 
             return vector;
@@ -263,7 +293,9 @@ namespace Physics
     }
     public class Force : Vector
     {
-        public Force(List<double> values = default(List<double>)) : base(values)
+        public Force() : base() { units = DerivedUnits.Force; }
+
+        public Force(List<double> values) : base(values)
         {
             units = DerivedUnits.Force;
         }

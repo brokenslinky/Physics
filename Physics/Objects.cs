@@ -47,15 +47,15 @@ namespace Physics
         }
     }
 
+
+    // <desription> A CelestialBody is a Particle with 
+    // constructors to calculate position and momentum 
+    // given a phase angle and orbital properties. </description>
     public class CelestialBody : Particle
     {
-        // <desription> A CelestialBody is a Particle with 
-        // constructors to calculate position and momentum 
-        // given a phase angle and orbital properties. </description>
 
-        double Mu = 1.327124400189 * Math.Pow(10, 20);
-
-        public CelestialBody(double mass, double periapsis, double apoapsis, double phaseAngle = 0.0)
+        public CelestialBody(double mass, double periapsis, double apoapsis, 
+            double phaseAngle = 0.0, double Mu = 1.327124400189E20)
         {
             this.mass = new Mass(mass);
             // just calculate at apoapsis for now

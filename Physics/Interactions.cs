@@ -67,10 +67,9 @@ namespace Physics
 
     public class Gravity : Interaction
     {
-        const double G_value = 6.6743015E-11; // 0.000000000066743015;
-        const double G_units =
+        static readonly Scalar G = new Scalar(6.6743015E-11, 
             DerivedUnits.Force * DerivedUnits.Distance * DerivedUnits.Distance /
-            (DerivedUnits.Mass * DerivedUnits.Mass);
+            (DerivedUnits.Mass * DerivedUnits.Mass));
 
         public Gravity (Particle A, Particle B)
         {
@@ -84,8 +83,6 @@ namespace Physics
 
         public new static Vector InteractionForce(Particle A, Particle B)
         {
-            Scalar G = new Scalar(G_value, G_units);
-
             Vector AtoB = B.position - A.position;
             Scalar distance = AtoB.Magnitude();
             Scalar magnitudeOfForce = G * (A.mass * B.mass) / (distance * distance);
