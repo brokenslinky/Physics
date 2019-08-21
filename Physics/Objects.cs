@@ -67,6 +67,8 @@ namespace Physics
                     0.0
                 });
             double momentumAtApoapsis = mass * Math.Sqrt(Mu * (2.0 / apoapsis - 2.0 / (apoapsis + periapsis)));
+            if (double.IsNaN(momentumAtApoapsis))
+                momentumAtApoapsis = 0.0;
             this.momentum = 
                 new Momentum(new List<double>()
                 {
