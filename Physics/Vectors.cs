@@ -23,6 +23,11 @@ namespace Physics
         {
             _values = new List<double>() { 0.0, 0.0, 0.0 };
         }
+        public Vector(Vector X)
+        {
+            values = X.values;
+            units = X.units;
+        }
 
         public Scalar Magnitude()
         {
@@ -130,232 +135,192 @@ namespace Physics
     public class Position : Vector
     {
         public Position(List<double> values) : base(values)
-        {
-            units = DerivedUnits.Distance;
-        }
+        { units = DerivedUnits.Distance; }
         public Position() : base()
+        { units = DerivedUnits.Distance; }
+        public Position(Position X) : base(X)
+        { units = DerivedUnits.Distance; }
+        public Position(Vector X) : base(X)
         {
-            units = DerivedUnits.Distance;
+            if (X.units != DerivedUnits.Distance)
+                throw new UnitMismatchException();
         }
+        
+        public static Position operator +(Position X, Position Y)
+        { return new Position((Vector)X + (Vector)Y); }
+        public static Position operator -(Position X, Position Y)
+        { return new Position((Vector)X - (Vector)Y); }
+        public static Position operator *(double x, Position Y)
+        { return new Position(x * (Vector)Y); }
+        public static Position operator *(Position X, double y)
+        { return y * X; }
+        public static Position operator /(Position X, double y)
+        { return new Position((Vector)X / y); }
+
+        public static Velocity operator /(Position X, Time y)
+        { return new Velocity((Vector)X / y.value); }
     }
 
     public class Velocity : Vector
     {
+        public Velocity(List<double> values) : base(values)
+        { units = DerivedUnits.Velocity; }
+        public Velocity() : base()
+        { units = DerivedUnits.Velocity; }
+        public Velocity(Position X) : base(X)
+        { units = DerivedUnits.Velocity; }
+        public Velocity(Vector X) : base(X)
+        {
+            if (X.units != DerivedUnits.Velocity)
+                throw new UnitMismatchException();
+        }
 
+        public static Velocity operator +(Velocity X, Velocity Y)
+        { return new Velocity((Vector)X + (Vector)Y); }
+        public static Velocity operator -(Velocity X, Velocity Y)
+        { return new Velocity((Vector)X - (Vector)Y); }
+        public static Velocity operator *(double x, Velocity Y)
+        { return new Velocity(x * (Vector)Y); }
+        public static Velocity operator *(Velocity X, double y)
+        { return y * X; }
+        public static Velocity operator /(Velocity X, double y)
+        { return new Velocity((Vector)X / y); }
+
+        public static Position operator *(Velocity X, Time Y)
+        { return new Position((Vector)X * Y); }
+        public static Position operator *(Time X, Velocity Y)
+        { return Y * X; }
+
+        public static Momentum operator *(Mass X, Velocity Y)
+        { return new Momentum((Scalar)X * (Velocity)Y); }
+        public static Momentum operator *(Velocity X, Mass Y)
+        { return Y * X; }
+
+        public static Acceleration operator /(Velocity X, Time Y)
+        { return new Acceleration((Vector)X / (Scalar)Y); }
     }
 
     public class Acceleration : Vector
     {
+        public Acceleration(List<double> values) : base(values)
+        { units = DerivedUnits.Acceleration; }
+        public Acceleration() : base()
+        { units = DerivedUnits.Acceleration; }
+        public Acceleration(Position X) : base(X)
+        { units = DerivedUnits.Acceleration; }
+        public Acceleration(Vector X) : base(X)
+        {
+            if (X.units != DerivedUnits.Acceleration)
+                throw new UnitMismatchException();
+        }
 
+        public static Acceleration operator +(Acceleration X, Acceleration Y)
+        { return new Acceleration((Vector)X + (Vector)Y); }
+        public static Acceleration operator -(Acceleration X, Acceleration Y)
+        { return new Acceleration((Vector)X - (Vector)Y); }
+        public static Acceleration operator *(double x, Acceleration Y)
+        { return new Acceleration(x * (Vector)Y); }
+        public static Acceleration operator *(Acceleration X, double y)
+        { return y * X; }
+        public static Acceleration operator /(Acceleration X, double y)
+        { return new Acceleration((Vector)X / y); }
+
+        public static Force operator *(Mass X, Acceleration Y)
+        { return new Force((Scalar)X * (Vector)Y); }
+        public static Force operator *(Acceleration X, Mass Y)
+        { return Y * X; }
+
+        public static Velocity operator *(Time X, Acceleration Y)
+        { return new Velocity((Scalar)X * (Vector)Y); }
+        public static Velocity operator *(Acceleration X, Time Y)
+        { return Y * X; }
     }
 
     public class Momentum : Vector
     {
-        public Momentum() : base()
-        {
-            new Vector(new List<double>(), DerivedUnits.Momentum);
-        }
         public Momentum(List<double> values) : base(values)
+        { units = DerivedUnits.Momentum; }
+        public Momentum() : base()
+        { units = DerivedUnits.Momentum; }
+        public Momentum(Position X) : base(X)
+        { units = DerivedUnits.Momentum; }
+        public Momentum(Vector X) : base(X)
         {
-            this.values = values;
-            units = DerivedUnits.Momentum;
+            if (X.units != DerivedUnits.Momentum)
+                throw new UnitMismatchException();
         }
+
+        public static Momentum operator +(Momentum X, Momentum Y)
+        { return new Momentum((Vector)X + (Vector)Y); }
+        public static Momentum operator -(Momentum X, Momentum Y)
+        { return new Momentum((Vector)X - (Vector)Y); }
+        public static Momentum operator *(double x, Momentum Y)
+        { return new Momentum(x * (Vector)Y); }
+        public static Momentum operator *(Momentum X, double y)
+        { return y * X; }
+        public static Momentum operator /(Momentum X, double y)
+        { return new Momentum((Vector)X / y); }
+
+        public static Force operator /(Momentum X, Time Y)
+        { return new Force((Vector)X / (Scalar)Y); }
+
+        public static Velocity operator /(Momentum X, Mass Y)
+        { return new Velocity((Vector)X / (Scalar)Y); }
+
+        public static Energy operator *(Momentum X, Velocity Y)
+        { return new Energy((Vector)X * (Vector)Y); }
+        public static Energy operator *(Velocity X, Momentum Y)
+        { return Y * X; }
+
+        public static Power operator *(Momentum X, Acceleration Y)
+        { return new Power((Vector)X * (Vector)Y); }
+        public static Power operator *(Acceleration X, Momentum Y)
+        { return Y * X; }
     }
 
     public class Force : Vector
     {
-        public Force() : base() { units = DerivedUnits.Force; }
-
         public Force(List<double> values) : base(values)
+        { units = DerivedUnits.Force; }
+        public Force() : base()
+        { units = DerivedUnits.Force; }
+        public Force(Position X) : base(X)
+        { units = DerivedUnits.Force; }
+        public Force(Vector X) : base(X)
         {
-            units = DerivedUnits.Force;
+            if (X.units != DerivedUnits.Force)
+                throw new UnitMismatchException();
         }
+
+        public static Force operator +(Force X, Force Y)
+        { return new Force((Vector)X + (Vector)Y); }
+        public static Force operator -(Force X, Force Y)
+        { return new Force((Vector)X - (Vector)Y); }
+        public static Force operator *(double x, Force Y)
+        { return new Force(x * (Vector)Y); }
+        public static Force operator *(Force X, double y)
+        { return y * X; }
+        public static Force operator /(Force X, double y)
+        { return new Force((Vector)X / y); }
+
+        public static Momentum operator *(Force X, Time Y)
+        { return new Momentum((Vector)X * (Scalar)Y); }
+        public static Momentum operator *(Time X, Force Y)
+        { return Y * X; }
+
+        public static Acceleration operator /(Force X, Time Y)
+        { return new Acceleration((Vector)X / (Scalar)Y); }
+
+        public static Energy operator *(Force X, Position Y)
+        { return new Energy((Vector)X * (Vector)Y); }
+        public static Energy operator *(Position X, Force Y)
+        { return Y * X; }
+
+        public static Power operator *(Force X, Velocity Y)
+        { return new Power((Vector)X * (Vector)Y); }
+        public static Power operator *(Velocity X, Force Y)
+        { return Y * X; }
     }
 
     #endregion
-
-    /*
-#region 3D Vectors
-
-public class Vector_3d
-{
-    public double[] value = { 0.0, 0.0, 0.0 };
-
-    public Vector_3d(double x = 0.0, double y = 0.0, double z = 0.0)
-    {
-        this.value[0] = x; this.value[1] = y; this.value[2] = z;
-    }
-    public Vector_3d(Vector_3d V) : this(V.value[0], V.value[1], V.value[2]) { }
-
-    public double Magnitude()
-    {
-        return Math.Sqrt(value[0] * value[0] + value[1] * value[1] + value[2] * value[2]);
-    }
-
-    public Vector_3d Direction()
-    {
-        double magnitude = Magnitude();
-        return new Vector_3d(value[0] / magnitude, value[1] / magnitude, value[2] / magnitude);
-    }
-
-    public static Vector_3d operator +(Vector_3d a, Vector_3d b)
-    {
-        for (int axis = 0; axis < a.value.Length; axis++)
-            a.value[axis] += b.value[axis];
-        return a;
-    }
-    public static Vector_3d operator -(Vector_3d a, Vector_3d b)
-    {
-        for (int axis = 0; axis < a.value.Length; axis++)
-            a.value[axis] -= b.value[axis];
-        return a;
-    }
-    public static Vector_3d operator *(double multiplier, Vector_3d vector)
-    {
-        for (int axis = 0; axis < vector.value.Length; axis++)
-            vector.value[axis] *= multiplier;
-        return vector;
-    }
-    public static Vector_3d operator *(Vector_3d vector, double multiplier)
-    { return multiplier * vector; }
-    public static Vector_3d operator /(Vector_3d vector, double divisor)
-    {
-        for (int axis = 0; axis < vector.value.Length; axis++)
-            vector.value[axis] /= divisor;
-        return vector;
-    }
-
-    public static Scalar operator *(Vector_3d v1, Vector_3d v2)
-    {
-        double dotProduct = 0.0;
-        for (int axis = 0; axis < v1.value.Length; axis++)
-            dotProduct += v1.value[axis] * v2.value[axis];
-        return new Scalar(dotProduct);
-    }
-}
-
-public class Position : Vector_3d
-{
-    public Position(double x = 0.0, double y = 0.0, double z = 0.0) : base(x, y, z) { }
-    public Position(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
-
-    public static Position operator +(Position a, Position b)
-    { return new Position(new Vector_3d(a) + new Vector_3d(b)); }
-    public static Position operator -(Position a, Position b)
-    { return new Position(new Vector_3d(a) - new Vector_3d(b)); }
-    public static Position operator *(double n, Position x)
-    { return new Position(n * new Vector_3d(x)); }
-    public static Position operator *(Position x, double n)
-    { return new Position(n * new Vector_3d(x)); }
-    public static Position operator /(Position x, double n)
-    { return new Position(new Vector_3d(x) / n); }
-
-    public static Velocity operator / (Position x, Time t) { return new Velocity(x / t.value); }
-}
-
-public class Velocity : Vector_3d
-{
-    public Velocity(double x = 0.0, double y = 0.0, double z = 0.0) : base(x, y, z) { }
-    public Velocity(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
-
-    public static Velocity operator +(Velocity a, Velocity b)
-    { return new Velocity(new Vector_3d(a) + new Vector_3d(b)); }
-    public static Velocity operator -(Velocity a, Velocity b)
-    { return new Velocity(new Vector_3d(a) - new Vector_3d(b)); }
-    public static Velocity operator *(double n, Velocity v)
-    { return new Velocity(n * new Vector_3d(v)); }
-    public static Velocity operator *(Velocity v, double n)
-    { return new Velocity(n * new Vector_3d(v)); }
-    public static Velocity operator /(Velocity v, double n)
-    { return new Velocity(new Vector_3d(v) / n); }
-
-    public static Momentum operator *(Mass m, Velocity v) { return new Momentum(m.value * v); }
-    public static Momentum operator *(Velocity v, Mass m) { return new Momentum(m.value * v); }
-
-    public static Position operator *(Time t, Velocity v)
-    { return new Position(new Vector_3d(v) * t.value); }
-    public static Position operator *(Velocity v, Time t)
-    { return new Position(new Vector_3d(v) * t.value); }
-
-    public static Acceleration operator / (Velocity v, Time t)
-    { return new Acceleration(new Vector_3d(v) / t.value); }
-}
-
-public class Acceleration : Vector_3d
-{
-    public Acceleration(double x = 0.0, double y = 0.0, double z = 0.0) : base(x, y, z) { }
-    public Acceleration(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
-
-    public static Acceleration operator *(double n, Acceleration a)
-    { return new Acceleration(n * new Vector_3d(a)); }
-    public static Acceleration operator *(Acceleration a, double n)
-    { return new Acceleration(n * new Vector_3d(a)); }
-
-    public static Velocity operator *(Acceleration a, Time t) { return new Velocity(a * t.value); }
-    public static Velocity operator *(Time t, Acceleration a) { return new Velocity(a * t.value); }
-
-    public static Force operator *(Mass m, Acceleration a) { return new Force(m.value * a); }
-    public static Force operator *(Acceleration a, Mass m) { return new Force(m.value * a); }
-}
-
-public class Force : Vector_3d
-{
-    public Force(double x = 0.0, double y = 0.0, double z = 0.0) : base(x, y, z) { }
-    public Force(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
-
-    public static Force operator +(Force a, Force b)
-    { return new Force(new Vector_3d(a) + new Vector_3d(b)); }
-    public static Force operator -(Force a, Force b)
-    { return new Force(new Vector_3d(a) - new Vector_3d(b)); }
-    public static Force operator *(double n, Force F)
-    { return new Force(n * new Vector_3d(F)); }
-    public static Force operator *(Force F, double n)
-    { return new Force(n * new Vector_3d(F)); }
-    public static Force operator /(Force F, double n)
-    { return new Force(new Vector_3d(F) / n); }
-
-    public static Momentum operator *(Force F, Time t)
-    { return new Momentum(new Vector_3d(F) * t.value); }
-    public static Momentum operator *(Time t, Force F)
-    { return new Momentum(new Vector_3d(F) * t.value); }
-
-    public static Energy operator *(Force F, Position x)
-    { return new Energy(new Vector_3d(F) * new Vector_3d(x)); }
-    public static Energy operator *(Position x, Force F)
-    { return new Energy(new Vector_3d(F) * new Vector_3d(x)); }
-
-    public static Acceleration operator /(Force F, Mass m)
-    { return new Acceleration(new Vector_3d(F) / m.value); }
-}
-
-public class Momentum : Vector_3d
-{
-    public Momentum(double x, double y, double z) : base(x, y, z) { }
-    public Momentum(Vector_3d v) : base(v.value[0], v.value[1], v.value[2]) { }
-
-    public static Momentum operator +(Momentum a, Momentum b)
-    { return new Momentum(new Vector_3d(a) + new Vector_3d(b)); }
-    public static Momentum operator -(Momentum a, Momentum b)
-    { return new Momentum(new Vector_3d(a) - new Vector_3d(b)); }
-    public static Momentum operator *(double n, Momentum p)
-    { return new Momentum(n * new Vector_3d(p)); }
-    public static Momentum operator *(Momentum p, double n)
-    { return new Momentum(n * new Vector_3d(p)); }
-    public static Momentum operator /(Momentum p, double n)
-    { return new Momentum(new Vector_3d(p) / n); }
-
-    public static Energy operator *(Momentum p, Velocity v)
-    { return new Energy(new Vector_3d(p) * new Vector_3d(v)); }
-    public static Energy operator *(Velocity v, Momentum p)
-    { return new Energy(new Vector_3d(p) * new Vector_3d(v)); }
-
-    public static Force operator / (Momentum p, Time t)
-    { return new Force(new Vector_3d(p) / t.value); }
-
-    public static Velocity operator /(Momentum p, Mass m)
-    { return new Velocity(new Vector_3d(p) / m.value); }
-}
-
-#endregion
-*/
 }

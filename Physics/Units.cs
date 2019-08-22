@@ -17,7 +17,9 @@ namespace Physics
         public static readonly DerivedUnits Distance = new DerivedUnits(BaseUnits.Distance);
         public static readonly DerivedUnits Time = new DerivedUnits(BaseUnits.Time);
         public static readonly DerivedUnits Mass = new DerivedUnits(BaseUnits.Mass);
+        public static readonly DerivedUnits Velocity = Distance / Time;
         public static readonly DerivedUnits Momentum = Mass * Distance / Time;
+        public static readonly DerivedUnits Acceleration = Velocity / Time;
         public static readonly DerivedUnits Force = Momentum / Time;
         public static readonly DerivedUnits Energy = Force * Distance;
         public static readonly DerivedUnits Power = Energy / Time;
@@ -28,7 +30,9 @@ namespace Physics
             { Distance._unitType, "Distance" },
             { Time._unitType, "Time" },
             { Mass._unitType, "Mass" },
+            { Velocity._unitType, "Velocity" },
             { Momentum._unitType, "Momentum" },
+            { Acceleration._unitType, "Acceleration" },
             { Force._unitType, "Force" },
             { Energy._unitType, "Energy" },
             { Power._unitType, "Power" },

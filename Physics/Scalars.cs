@@ -80,7 +80,7 @@ namespace Physics
     public class Mass : Scalar
     {
         public Mass(double value = 0.0) : base(value) { units = DerivedUnits.Mass; }
-        public Mass(Mass mass) : base((Scalar)mass) { }
+        public Mass(Mass mass) : base(mass) { }
         public Mass(Scalar scalar) : base(scalar)
         {
             if (scalar.units != DerivedUnits.Mass)
