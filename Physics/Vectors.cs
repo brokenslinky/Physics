@@ -6,7 +6,7 @@ namespace Physics
     public class Vector
     {
         DerivedUnits _units = DerivedUnits.Unitless;
-        public List<double> _values = new List<double>();
+        List<double> _values = new List<double>();
 
         public List<double> values { get { return _values; } set { _values = value; } }
 
@@ -173,86 +173,6 @@ namespace Physics
     }
 
     #endregion
-
-    /*
-    #region Scalars
-
-    public class Scalar
-    {
-        public double value = 0.0;
-        public Scalar(double value) { this.value = value; }
-        public Scalar(Scalar scalar) { this.value = scalar.value; }
-
-        #region Operators
-        public static Scalar operator +(Scalar a, Scalar b) { return new Scalar(a.value + b.value); }
-        public static Scalar operator -(Scalar a, Scalar b) { return new Scalar(a.value - b.value); }
-        public static Scalar operator *(double a, Scalar b) { return new Scalar(a * b.value); }
-        public static Scalar operator *(Scalar b, double a) { return new Scalar(a * b.value); }
-        public static Scalar operator /(Scalar a, double b) { return new Scalar(a.value / b); }
-
-        public static double operator *(Scalar a, Scalar b) { return a.value * b.value; }
-        public static double operator /(Scalar a, Scalar b) { return a.value / b.value; }
-        #endregion
-    }
-
-    public class Time : Scalar
-    {
-        public Time(double time) : base(time) { }
-        public Time(Scalar scalar) : base(scalar.value) { }
-
-        public static Time operator +(Time a, Time b) { return new Time(a.value + b.value); }
-        public static Time operator -(Time a, Time b) { return new Time(a.value - b.value); }
-        public static Time operator *(double n, Time t) { return new Time(n * t.value); }
-        public static Time operator *(Time t, double n) { return new Time(n * t.value); }
-        public static Time operator /(Time t, double n) { return new Time(t.value / n); }
-
-        public static double operator /(Time a, Time b) { return a.value / b.value; }
-    }
-
-    public class Mass : Scalar
-    {
-        public Mass(double mass) : base(mass) { }
-        public Mass(Scalar scalar) : base(scalar.value) { }
-
-        public static Scalar operator +(Mass a, Mass b) { return new Mass(a.value + b.value); }
-        public static Scalar operator -(Mass a, Mass b) { return new Mass(a.value - b.value); }
-    }
-
-    public class Energy : Scalar
-    {
-        public Energy(double energy) : base(energy) { }
-        public Energy(Scalar scalar) : base(scalar.value) { }
-
-        public static Energy operator +(Energy a, Energy b) { return new Energy(a.value + b.value); }
-        public static Energy operator -(Energy a, Energy b) { return new Energy(a.value - b.value); }
-        public static Energy operator *(double n, Energy t) { return new Energy(n * t.value); }
-        public static Energy operator *(Energy t, double n) { return new Energy(n * t.value); }
-        public static Energy operator /(Energy t, double n) { return new Energy(t.value / n); }
-
-        public static double operator /(Energy a, Energy b) { return a.value / b.value; }
-
-        public static Power operator / (Energy E, Time t) { return new Power(E.value / t.value); }
-    }
-
-    public class Power : Scalar
-    {
-        public Power(double power) : base(power) { }
-        public Power(Scalar scalar) : base(scalar.value) { }
-
-        public static Power operator +(Power a, Power b) { return new Power(a.value + b.value); }
-        public static Power operator -(Power a, Power b) { return new Power(a.value - b.value); }
-        public static Power operator *(double n, Power t) { return new Power(n * t.value); }
-        public static Power operator *(Power t, double n) { return new Power(n * t.value); }
-        public static Power operator /(Power t, double n) { return new Power(t.value / n); }
-
-        public static double operator /(Power a, Power b) { return a.value / b.value; }
-
-        public static Energy operator *(Power P, Time t) { return new Energy(P.value * t.value); }
-        public static Energy operator *(Time t, Power P) { return new Energy(P.value * t.value); }
-    }
-
-    #endregion
-    */
 
     /*
 #region 3D Vectors

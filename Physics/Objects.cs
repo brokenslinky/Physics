@@ -16,8 +16,8 @@ namespace Physics
         {
             for (int axis = 0; axis < 3; axis++)
             {
-                position._values.Add(0.0);
-                momentum._values.Add(0.0);
+                position.values.Add(0.0);
+                momentum.values.Add(0.0);
             }
             this.mass = mass;
         }

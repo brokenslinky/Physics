@@ -121,15 +121,10 @@ namespace Physics
             units = DerivedUnits.Time;
         }
         public Time(Time time) : base((Scalar)time) { }
-        public Time(Time scalar) : base(scalar)
+        public Time(Scalar scalar) : base(scalar)
         {
             if (scalar.units != DerivedUnits.Time)
                 throw new UnitMismatchException();
-        }
-
-        public static Time operator +(Time X, Time Y)
-        {
-            return new Time(X.value + Y.value);
         }
 
         public static Time operator +(Time X, Time Y)
@@ -166,15 +161,10 @@ namespace Physics
             units = DerivedUnits.Energy;
         }
         public Energy(Energy energy) : base((Scalar)energy) { }
-        public Energy(Energy scalar) : base(scalar)
+        public Energy(Scalar scalar) : base(scalar)
         {
             if (scalar.units != DerivedUnits.Energy)
                 throw new UnitMismatchException();
-        }
-
-        public static Energy operator +(Energy X, Energy Y)
-        {
-            return new Energy(X.value + Y.value);
         }
 
         public static Energy operator +(Energy X, Energy Y)
@@ -216,15 +206,10 @@ namespace Physics
             units = DerivedUnits.Energy;
         }
         public Power(Power power) : base((Scalar)power) { }
-        public Power(Power scalar) : base(scalar)
+        public Power(Scalar scalar) : base(scalar)
         {
             if (scalar.units != DerivedUnits.Power)
                 throw new UnitMismatchException();
-        }
-
-        public static Power operator +(Power X, Power Y)
-        {
-            return new Power(X.value + Y.value);
         }
 
         public static Power operator +(Power X, Power Y)
