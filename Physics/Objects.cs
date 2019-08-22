@@ -8,7 +8,7 @@ namespace Physics
     public class Particle
     {
         public Scalar mass = new Scalar(Double.NaN, DerivedUnits.Mass);
-        public Vector position = new Vector(new List<double>() { 0.0 }, DerivedUnits.Distance);
+        public Vector position = new Vector(new List<double>() { 0.0 }, DerivedUnits.Displacement);
         public Vector momentum = new Vector(new List<double>() { 0.0 }, DerivedUnits.Momentum);
         public List<Interaction> interactions = new List<Interaction>();
 

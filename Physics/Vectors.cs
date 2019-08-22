@@ -124,8 +124,17 @@ namespace Physics
                 throw new DimensionMismatchException();
 
             double value = 0.0;
+            for (int axis = 0; axis < X.values.Count; axis++)
+                value += X.values[axis] * Y.values[axis];
 
-            throw new NotImplementedException();
+            return new Scalar(value, X.units * Y.units);
+        }
+
+        /// <summary>What does vector division mean?</summary>
+        public static Scalar operator /(Vector X, Vector Y)
+        {
+            // this should actually be a Tensor
+            throw new NotImplementedException("Vector division is not defined.");
         }
         #endregion
     }
@@ -135,14 +144,14 @@ namespace Physics
     public class Displacement : Vector
     {
         public Displacement(List<double> values) : base(values)
-        { units = DerivedUnits.Distance; }
+        { units = DerivedUnits.Displacement; }
         public Displacement() : base()
-        { units = DerivedUnits.Distance; }
+        { units = DerivedUnits.Displacement; }
         public Displacement(Displacement X) : base(X)
-        { units = DerivedUnits.Distance; }
+        { units = DerivedUnits.Displacement; }
         public Displacement(Vector X) : base(X)
         {
-            if (X.units != DerivedUnits.Distance)
+            if (X.units != DerivedUnits.Displacement)
                 throw new UnitMismatchException();
         }
         
