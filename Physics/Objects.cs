@@ -7,9 +7,9 @@ namespace Physics
 {
     public class Particle
     {
-        public Scalar mass = new Scalar(Double.NaN, DerivedUnits.Mass);
-        public Vector position = new Vector(new List<double>() { 0.0 }, DerivedUnits.Displacement);
-        public Vector momentum = new Vector(new List<double>() { 0.0 }, DerivedUnits.Momentum);
+        public Mass mass = new Mass();
+        public Displacement position = new Displacement(new List<double>() { 0.0 });
+        public Momentum momentum = new Momentum(new List<double>() { 0.0 });
         public List<Interaction> interactions = new List<Interaction>();
 
         public Particle (Mass mass)
@@ -26,21 +26,21 @@ namespace Physics
         {
         }
 
-        public Vector velocity() { return momentum / mass; }
-        public Vector velocity(Vector p) { return p / mass; }
+        public Velocity velocity() { return momentum / mass; }
+        public Velocity velocity(Momentum p) { return p / mass; }
 
-        public void Iterate(Scalar timeStep, Vector force)
+        public void Iterate(Time timeStep, Force force)
         {
-            Vector changeInMomentum = timeStep * force;
+            Momentum changeInMomentum = timeStep * force;
 
-            Vector changeInPosition = timeStep * velocity(momentum + changeInMomentum / 2.0);
+            Displacement changeInPosition = timeStep * velocity(momentum + changeInMomentum / 2.0);
 
             momentum += changeInMomentum;
             position += changeInPosition;
         }
         public void Iterate(Time timeStep)
         {
-            Vector netForce = new Force();
+            Force netForce = new Force();
             foreach (Interaction interaction in interactions)
                 netForce += interaction.InteractionForce();
             Iterate(timeStep, netForce);
