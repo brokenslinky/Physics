@@ -14,20 +14,23 @@ namespace Physics
     public class DerivedUnits
     {
         public static readonly DerivedUnits Unitless = new DerivedUnits(BaseUnits.Unitless);
-        public static readonly DerivedUnits Displacement = new DerivedUnits(BaseUnits.Displacement);
+        public static readonly DerivedUnits Length = new DerivedUnits(BaseUnits.Displacement);
         public static readonly DerivedUnits Time = new DerivedUnits(BaseUnits.Time);
         public static readonly DerivedUnits Mass = new DerivedUnits(BaseUnits.Mass);
-        public static readonly DerivedUnits Velocity = Displacement / Time;
-        public static readonly DerivedUnits Momentum = Mass * Displacement / Time;
+        public static readonly DerivedUnits Velocity = Length / Time;
+        public static readonly DerivedUnits Momentum = Mass * Length / Time;
         public static readonly DerivedUnits Acceleration = Velocity / Time;
         public static readonly DerivedUnits Force = Momentum / Time;
-        public static readonly DerivedUnits Energy = Force * Displacement;
+        public static readonly DerivedUnits Energy = Force * Length;
         public static readonly DerivedUnits Power = Energy / Time;
+        public static readonly DerivedUnits AngularVelocity = Unitless / Time;
+        public static readonly DerivedUnits RotationalInertia = Mass * Length * Length;
+        public static readonly DerivedUnits AngularMomentum = RotationalInertia * AngularVelocity;
 
         public static readonly Dictionary<double, string> UnitType = new Dictionary<double, string>()
         {
             { Unitless._unitType, "Unitless" },
-            { Displacement._unitType, "Distance" },
+            { Length._unitType, "Length" },
             { Time._unitType, "Time" },
             { Mass._unitType, "Mass" },
             { Velocity._unitType, "Velocity" },
@@ -36,6 +39,9 @@ namespace Physics
             { Force._unitType, "Force" },
             { Energy._unitType, "Energy" },
             { Power._unitType, "Power" },
+            { AngularVelocity._unitType, "AngularVelocity" },
+            { RotationalInertia._unitType, "RotationalInertia" },
+            { AngularMomentum._unitType, "AngularMomentum" },
         };
 
         internal double _unitType = 1.0;

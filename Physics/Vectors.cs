@@ -19,9 +19,12 @@ namespace Physics
             _units = units;
         }
         public Vector(List<double> values) { _values = values; }
-        public Vector()
+        public Vector(int dimensionality = 3)
         {
-            _values = new List<double>() { 0.0, 0.0, 0.0 };
+            List<double> values = new List<double>();
+            for (int axis = 0; axis < dimensionality; axis++)
+                values.Add(0.0);
+            _values = values;
         }
         public Vector(Vector X)
         {
@@ -144,14 +147,14 @@ namespace Physics
     public class Displacement : Vector
     {
         public Displacement(List<double> values) : base(values)
-        { units = DerivedUnits.Displacement; }
+        { units = DerivedUnits.Length; }
         public Displacement() : base()
-        { units = DerivedUnits.Displacement; }
+        { units = DerivedUnits.Length; }
         public Displacement(Displacement X) : base(X)
-        { units = DerivedUnits.Displacement; }
+        { units = DerivedUnits.Length; }
         public Displacement(Vector X) : base(X)
         {
-            if (X.units != DerivedUnits.Displacement)
+            if (X.units != DerivedUnits.Length)
                 throw new UnitMismatchException();
         }
         

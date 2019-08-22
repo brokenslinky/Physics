@@ -30,8 +30,8 @@ namespace Physics
     public class Spring : Interaction
     {
         public Scalar springRate = new Scalar(double.PositiveInfinity, 
-            DerivedUnits.Force / DerivedUnits.Displacement);
-        public Scalar restLength = new Scalar(0.0, DerivedUnits.Displacement);
+            DerivedUnits.Force / DerivedUnits.Length);
+        public Scalar restLength = new Scalar(0.0, DerivedUnits.Length);
 
         public Spring(Particle A, Particle B, double springRate = double.MaxValue, double restLength = 0.0)
         {
@@ -53,7 +53,7 @@ namespace Physics
         public new Force InteractionForce(Displacement xToY) 
         {
             // <summary> returns force on x due to y </summary>
-            if (xToY.units != DerivedUnits.Displacement)
+            if (xToY.units != DerivedUnits.Length)
                 throw new UnitMismatchException();
             Scalar magnitude = springRate * (xToY.Magnitude() - restLength);
             return (Force)(magnitude * xToY.Direction());
@@ -68,7 +68,7 @@ namespace Physics
     public class Gravity : Interaction
     {
         static readonly Scalar G = new Scalar(6.6743015E-11, 
-            DerivedUnits.Force * DerivedUnits.Displacement * DerivedUnits.Displacement /
+            DerivedUnits.Force * DerivedUnits.Length * DerivedUnits.Length /
             (DerivedUnits.Mass * DerivedUnits.Mass));
 
         public Gravity (Particle A, Particle B)
