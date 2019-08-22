@@ -132,32 +132,32 @@ namespace Physics
 
     #region Vector Types
 
-    public class Position : Vector
+    public class Displacement : Vector
     {
-        public Position(List<double> values) : base(values)
+        public Displacement(List<double> values) : base(values)
         { units = DerivedUnits.Distance; }
-        public Position() : base()
+        public Displacement() : base()
         { units = DerivedUnits.Distance; }
-        public Position(Position X) : base(X)
+        public Displacement(Displacement X) : base(X)
         { units = DerivedUnits.Distance; }
-        public Position(Vector X) : base(X)
+        public Displacement(Vector X) : base(X)
         {
             if (X.units != DerivedUnits.Distance)
                 throw new UnitMismatchException();
         }
         
-        public static Position operator +(Position X, Position Y)
-        { return new Position((Vector)X + (Vector)Y); }
-        public static Position operator -(Position X, Position Y)
-        { return new Position((Vector)X - (Vector)Y); }
-        public static Position operator *(double x, Position Y)
-        { return new Position(x * (Vector)Y); }
-        public static Position operator *(Position X, double y)
+        public static Displacement operator +(Displacement X, Displacement Y)
+        { return new Displacement((Vector)X + (Vector)Y); }
+        public static Displacement operator -(Displacement X, Displacement Y)
+        { return new Displacement((Vector)X - (Vector)Y); }
+        public static Displacement operator *(double x, Displacement Y)
+        { return new Displacement(x * (Vector)Y); }
+        public static Displacement operator *(Displacement X, double y)
         { return y * X; }
-        public static Position operator /(Position X, double y)
-        { return new Position((Vector)X / y); }
+        public static Displacement operator /(Displacement X, double y)
+        { return new Displacement((Vector)X / y); }
 
-        public static Velocity operator /(Position X, Time y)
+        public static Velocity operator /(Displacement X, Time y)
         { return new Velocity((Vector)X / y.value); }
     }
 
@@ -167,7 +167,7 @@ namespace Physics
         { units = DerivedUnits.Velocity; }
         public Velocity() : base()
         { units = DerivedUnits.Velocity; }
-        public Velocity(Position X) : base(X)
+        public Velocity(Displacement X) : base(X)
         { units = DerivedUnits.Velocity; }
         public Velocity(Vector X) : base(X)
         {
@@ -186,9 +186,9 @@ namespace Physics
         public static Velocity operator /(Velocity X, double y)
         { return new Velocity((Vector)X / y); }
 
-        public static Position operator *(Velocity X, Time Y)
-        { return new Position((Vector)X * Y); }
-        public static Position operator *(Time X, Velocity Y)
+        public static Displacement operator *(Velocity X, Time Y)
+        { return new Displacement((Vector)X * Y); }
+        public static Displacement operator *(Time X, Velocity Y)
         { return Y * X; }
 
         public static Momentum operator *(Mass X, Velocity Y)
@@ -206,7 +206,7 @@ namespace Physics
         { units = DerivedUnits.Acceleration; }
         public Acceleration() : base()
         { units = DerivedUnits.Acceleration; }
-        public Acceleration(Position X) : base(X)
+        public Acceleration(Displacement X) : base(X)
         { units = DerivedUnits.Acceleration; }
         public Acceleration(Vector X) : base(X)
         {
@@ -242,7 +242,7 @@ namespace Physics
         { units = DerivedUnits.Momentum; }
         public Momentum() : base()
         { units = DerivedUnits.Momentum; }
-        public Momentum(Position X) : base(X)
+        public Momentum(Displacement X) : base(X)
         { units = DerivedUnits.Momentum; }
         public Momentum(Vector X) : base(X)
         {
@@ -284,7 +284,7 @@ namespace Physics
         { units = DerivedUnits.Force; }
         public Force() : base()
         { units = DerivedUnits.Force; }
-        public Force(Position X) : base(X)
+        public Force(Displacement X) : base(X)
         { units = DerivedUnits.Force; }
         public Force(Vector X) : base(X)
         {
@@ -311,9 +311,9 @@ namespace Physics
         public static Acceleration operator /(Force X, Time Y)
         { return new Acceleration((Vector)X / (Scalar)Y); }
 
-        public static Energy operator *(Force X, Position Y)
+        public static Energy operator *(Force X, Displacement Y)
         { return new Energy((Vector)X * (Vector)Y); }
-        public static Energy operator *(Position X, Force Y)
+        public static Energy operator *(Displacement X, Force Y)
         { return Y * X; }
 
         public static Power operator *(Force X, Velocity Y)

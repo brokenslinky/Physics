@@ -60,7 +60,7 @@ namespace Physics
             this.mass = new Mass(mass);
             // just calculate at apoapsis for now
             this.position = 
-                new Position(new List<double>()
+                new Displacement(new List<double>()
                 {
                     apoapsis * Math.Cos(phaseAngle),
                     apoapsis * Math.Sin(phaseAngle),

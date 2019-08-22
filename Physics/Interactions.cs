@@ -11,7 +11,7 @@ namespace Physics
             return InteractionForce(A, B);
         }
 
-        public Force InteractionForce(Position XtoY)
+        public Force InteractionForce(Displacement XtoY)
         {
             // return the Force on x due to this interaction with y
             // this will be MINUS the Force on y due to this interaction with x

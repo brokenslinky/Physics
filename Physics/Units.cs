@@ -6,7 +6,7 @@ namespace Physics
     public enum BaseUnits
     {
         Unitless = 1,
-        Distance = 2,
+        Displacement = 2,
         Time = 3,
         Mass = 5
     }
@@ -14,20 +14,20 @@ namespace Physics
     public class DerivedUnits
     {
         public static readonly DerivedUnits Unitless = new DerivedUnits(BaseUnits.Unitless);
-        public static readonly DerivedUnits Distance = new DerivedUnits(BaseUnits.Distance);
+        public static readonly DerivedUnits Displacement = new DerivedUnits(BaseUnits.Displacement);
         public static readonly DerivedUnits Time = new DerivedUnits(BaseUnits.Time);
         public static readonly DerivedUnits Mass = new DerivedUnits(BaseUnits.Mass);
-        public static readonly DerivedUnits Velocity = Distance / Time;
-        public static readonly DerivedUnits Momentum = Mass * Distance / Time;
+        public static readonly DerivedUnits Velocity = Displacement / Time;
+        public static readonly DerivedUnits Momentum = Mass * Displacement / Time;
         public static readonly DerivedUnits Acceleration = Velocity / Time;
         public static readonly DerivedUnits Force = Momentum / Time;
-        public static readonly DerivedUnits Energy = Force * Distance;
+        public static readonly DerivedUnits Energy = Force * Displacement;
         public static readonly DerivedUnits Power = Energy / Time;
 
         public static readonly Dictionary<double, string> UnitType = new Dictionary<double, string>()
         {
             { Unitless._unitType, "Unitless" },
-            { Distance._unitType, "Distance" },
+            { Displacement._unitType, "Distance" },
             { Time._unitType, "Time" },
             { Mass._unitType, "Mass" },
             { Velocity._unitType, "Velocity" },
