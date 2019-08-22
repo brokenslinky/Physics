@@ -3,122 +3,6 @@ using System.Collections.Generic;
 
 namespace Physics
 {
-    public enum BaseUnits
-    {
-        Unitless = 1,
-        Distance = 2,
-        Time = 3,
-        Mass = 5
-    }
-
-    public class DerivedUnits
-    {
-        public static readonly DerivedUnits Unitless = new DerivedUnits(BaseUnits.Unitless);
-        public static readonly DerivedUnits Distance = new DerivedUnits(BaseUnits.Distance);
-        public static readonly DerivedUnits Time = new DerivedUnits(BaseUnits.Time);
-        public static readonly DerivedUnits Mass = new DerivedUnits(BaseUnits.Mass);
-        public static readonly DerivedUnits Momentum = Mass * Distance / Time;
-        public static readonly DerivedUnits Force = Momentum / Time;
-        public static readonly DerivedUnits Energy = Force * Distance;
-
-        private double unitType = 1.0;
-
-        public DerivedUnits(BaseUnits baseUnit) { unitType = (double)baseUnit; }
-        public DerivedUnits(double unitValue) { this.unitType = unitValue; }
-        public DerivedUnits(DerivedUnits derivedUnits) { new DerivedUnits(derivedUnits.unitType); }
-        public DerivedUnits() { new DerivedUnits(Unitless); }
-
-        public static DerivedUnits operator *(DerivedUnits X, DerivedUnits Y)
-        {
-            return new DerivedUnits(X.unitType * Y.unitType);
-        }
-        public static DerivedUnits operator /(DerivedUnits X, DerivedUnits Y)
-        {
-            return new DerivedUnits(X.unitType / Y.unitType);
-        }
-        public static bool operator ==(DerivedUnits X, DerivedUnits Y)
-        {
-            return X.unitType == Y.unitType;
-        }
-        public static bool operator !=(DerivedUnits X, DerivedUnits Y)
-        {
-            return X.unitType != Y.unitType;
-        }
-    }
-
-    public class Scalar
-    {
-        DerivedUnits _units = new DerivedUnits(1.0);
-        double _value = 0.0;
-
-        public double value { get { return _value; } set { _value = value; } }
-        public DerivedUnits units { get { return _units; } set { _units = value; } }
-
-        public Scalar(double value, DerivedUnits units) { _value = value; _units = units; }
-        public Scalar(double value) { _value = value; }
-        public Scalar() { }
-
-        public Scalar(Scalar scalar)
-        {
-            _value = scalar.value;
-            _units = scalar.units;
-        }
-
-        #region Operations
-
-        public static Scalar operator +(Scalar X, Scalar Y)
-        {
-            if (X.units != Y.units)
-                throw new UnitMismatchException();
-            return new Scalar(X._value + Y._value, X.units);
-        }
-
-        public static Scalar operator -(Scalar X, Scalar Y)
-        {
-            if (X.units != Y.units)
-                throw new UnitMismatchException();
-            return new Scalar(X._value - Y._value, X.units);
-        }
-
-        public static Scalar operator *(Scalar X, Scalar Y)
-        {
-            return new Scalar(X._value * Y._value, X.units * Y.units);
-        }
-
-        public static Scalar operator /(Scalar X, Scalar Y)
-        {
-            return new Scalar(X._value / Y._value, X.units / Y.units);
-        }
-
-        public static Scalar operator *(Scalar X, double y)
-        {
-            return new Scalar(X._value * y, X.units);
-        }
-        public static Scalar operator *(double x, Scalar Y)
-        {
-            return Y * x;
-        }
-
-        public static Scalar operator /(Scalar X, double y)
-        {
-            return new Scalar(X._value / y, X.units);
-        }
-
-        public static Vector operator *(Scalar X, List<double> y)
-        {
-            List<double> values = new List<double>();
-            foreach (double value in y)
-                values.Add(X._value * value);
-            return new Vector(values, X.units);
-        }
-        public static Vector operator *(List<double> x, Scalar Y)
-        {
-            return Y * x;
-        }
-
-        #endregion
-    }
-
     public class Vector
     {
         DerivedUnits _units = DerivedUnits.Unitless;
@@ -129,15 +13,12 @@ namespace Physics
         public void Add(double value) { _values.Add(value); }
 
         public DerivedUnits units { get { return _units; } set { _units = value; } }
-
         public Vector(List<double> values, DerivedUnits units)
         {
             _values = values;
             _units = units;
         }
-
         public Vector(List<double> values) { _values = values; }
-
         public Vector()
         {
             _values = new List<double>() { 0.0, 0.0, 0.0 };
@@ -244,41 +125,30 @@ namespace Physics
         #endregion
     }
 
-    public class Mass : Scalar
-    {
-        public Mass(double value = 0.0) : base(value)
-        {
-            units = DerivedUnits.Mass;
-        }
-    }
-    public class Time : Scalar
-    {
-        public Time(double value = 0.0) : base(value)
-        {
-            units = DerivedUnits.Time;
-        }
-
-        public static Time operator +(Time X, Time Y)
-        {
-            return new Time(X.value + Y.value);
-        }
-    }
+    #region Vector Types
 
     public class Position : Vector
     {
-        public Position(List<double> values = default(List<double>)) : base(values)
+        public Position(List<double> values) : base(values)
+        {
+            units = DerivedUnits.Distance;
+        }
+        public Position() : base()
         {
             units = DerivedUnits.Distance;
         }
     }
+
     public class Velocity : Vector
     {
 
     }
+
     public class Acceleration : Vector
     {
 
     }
+
     public class Momentum : Vector
     {
         public Momentum() : base()
@@ -291,6 +161,7 @@ namespace Physics
             units = DerivedUnits.Momentum;
         }
     }
+
     public class Force : Vector
     {
         public Force() : base() { units = DerivedUnits.Force; }
@@ -301,16 +172,7 @@ namespace Physics
         }
     }
 
-    public class UnitMismatchException : Exception
-    {
-        public UnitMismatchException()
-            : base("Units must match for addition, subtraction, comparison, or assignment") { }
-    }
-    public class DimensionMismatchException : Exception
-    {
-        public DimensionMismatchException()
-            : base("The dimensions of these vectors do not match.") { }
-    }
+    #endregion
 
     /*
     #region Scalars
