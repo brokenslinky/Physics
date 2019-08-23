@@ -18,7 +18,7 @@ namespace Physics
         public static readonly DerivedUnits Time = new DerivedUnits(BaseUnits.Time);
         public static readonly DerivedUnits Mass = new DerivedUnits(BaseUnits.Mass);
         public static readonly DerivedUnits Velocity = Length / Time;
-        public static readonly DerivedUnits Momentum = Mass * Length / Time;
+        public static readonly DerivedUnits Momentum = Mass * Velocity;
         public static readonly DerivedUnits Acceleration = Velocity / Time;
         public static readonly DerivedUnits Force = Momentum / Time;
         public static readonly DerivedUnits Energy = Force * Length;

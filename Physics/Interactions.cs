@@ -56,7 +56,7 @@ namespace Physics
             if (xToY.units != DerivedUnits.Length)
                 throw new UnitMismatchException();
             Scalar magnitude = springRate * (xToY.Magnitude() - restLength);
-            return (Force)(magnitude * xToY.Direction());
+            return new Force(magnitude * xToY.Direction());
         }
 
         public new Force InteractionForce(Particle x, Particle y)
@@ -86,7 +86,7 @@ namespace Physics
             Displacement AtoB = B.position - A.position;
             Scalar distance = AtoB.Magnitude();
             Scalar magnitudeOfForce = G * (A.mass * B.mass) / (distance * distance);
-            return (Force)(magnitudeOfForce * AtoB.Direction());
+            return new Force(magnitudeOfForce * AtoB.Direction());
         }
 
 
