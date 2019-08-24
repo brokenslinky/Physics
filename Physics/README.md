@@ -4,6 +4,7 @@
 
 # ToDo
     Add summaries to classes and methods
+	Define vector cross product
     Add implicit conversion of Vector and Scalar to double?
     Add Determinant() and Direction() methods to Tensor
     Add collection of Objects with Iterate() method to update all Objects in the collection simultaneously
