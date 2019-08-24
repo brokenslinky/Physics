@@ -1,10 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Physics
 {
+    enum InteractionType
+    {
+        Gravity,
+        Spring
+    }
+
     public class Interaction
     {
         public Particle A, B;
+        internal InteractionType interactionType;
+        internal List<Scalar> scalarParameters = new List<Scalar>();
 
         public Force InteractionForce()
         {
@@ -18,31 +27,44 @@ namespace Physics
 
             // This method needs to be overloaded for each interaction type
 
-            throw new System.NotImplementedException("InteractionForce() not defined for this Interaction");
+            throw new NotImplementedException("InteractionForce() not defined for this Interaction");
         }
         public Force InteractionForce(Particle x, Particle y)
         {
+            switch (interactionType)
+            {
+                case InteractionType.Gravity:
+                    return Gravity.InteractionForce(x, y);
+                case InteractionType.Spring:
+                    return ((Spring)this).InteractionForce(x, y);
+            }
             // Needs to be overridden by every interaction type
-            throw new System.NotImplementedException("InteractionForce() not defined for this Interaction");
+            throw new NotImplementedException("InteractionForce() not defined for this Interaction");
         }
     }
 
     public class Spring : Interaction
     {
-        public Scalar springRate = new Scalar(double.PositiveInfinity, 
-            DerivedUnits.Force / DerivedUnits.Length);
-        public Scalar restLength = new Scalar(0.0, DerivedUnits.Length);
+        public Scalar springRate
+        { get { return scalarParameters[0]; } set { scalarParameters[0] = value; } }
+        public Scalar restLength
+        { get { return scalarParameters[1]; } set { scalarParameters[1] = value; } }
 
         public Spring(Particle A, Particle B, double springRate = double.MaxValue, double restLength = 0.0)
         {
+            interactionType = InteractionType.Gravity;
             this.A = A; this.B = B;
-            this.springRate.value = springRate; this.restLength.value = restLength;
+            scalarParameters.Clear(); // I don't know if this is necessary in a constructor
+            scalarParameters.Add(new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length));
+            scalarParameters.Add(new Scalar(restLength, DerivedUnits.Length));
         }
 
         public Spring(double springRate = double.MaxValue, double restLength = 0.0)
         {
-            this.springRate.value = springRate;
-            this.restLength.value = restLength;
+            interactionType = InteractionType.Gravity;
+            scalarParameters.Clear(); // I don't know if this is necessary in a constructor
+            scalarParameters.Add(new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length));
+            scalarParameters.Add(new Scalar(restLength, DerivedUnits.Length));
         }
 
         public new Force InteractionForce()
@@ -73,6 +95,7 @@ namespace Physics
 
         public Gravity (Particle A, Particle B)
         {
+            interactionType = InteractionType.Gravity;
             this.A = A; this.B = B;
         }
 
