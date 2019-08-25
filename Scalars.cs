@@ -72,6 +72,23 @@ namespace Physics
             return Y * x;
         }
 
+        public static bool operator <(Scalar X, Scalar Y)
+        {
+            return X.value < Y.value;
+        }
+        public static bool operator >(Scalar X, Scalar Y)
+        {
+            return X.value > Y.value;
+        }
+        public static bool operator <=(Scalar X, Scalar Y)
+        {
+            return X.value <= Y.value;
+        }
+        public static bool operator >=(Scalar X, Scalar Y)
+        {
+            return X.value >= Y.value;
+        }
+
         #endregion
     }
 

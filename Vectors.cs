@@ -6,7 +6,7 @@ namespace Physics
     public class Vector
     {
         DerivedUnits _units = DerivedUnits.Unitless;
-        List<double> _values = new List<double>();
+        List<double> _values = new List<double>() { 0.0, 0.0, 0.0 };
 
         public List<double> values { get { return _values; } set { _values = value; } }
 

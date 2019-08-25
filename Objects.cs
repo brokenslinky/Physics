@@ -87,11 +87,6 @@ namespace Physics
 
         public Particle (Mass mass)
         {
-            for (int axis = 0; axis < 3; axis++)
-            {
-                position.values.Add(0.0);
-                momentum.values.Add(0.0);
-            }
             this.mass = mass;
         }
         public Particle (Particle particle)

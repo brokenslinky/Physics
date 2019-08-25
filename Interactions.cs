@@ -6,14 +6,15 @@ namespace Physics
     enum InteractionType
     {
         Gravity,
-        Spring
+        Spring,
+        Damper
     }
 
     public class Interaction
     {
         public Particle A, B;
         internal InteractionType interactionType;
-        internal List<Scalar> scalarParameters = new List<Scalar>();
+        internal Scalar[] scalarParameters = new Scalar[4];
 
         public Force InteractionForce()
         {
@@ -37,8 +38,9 @@ namespace Physics
                     return Gravity.InteractionForce(x, y);
                 case InteractionType.Spring:
                     return ((Spring)this).InteractionForce(x, y);
+                case InteractionType.Damper:
+                    return ((Damper)this).InteractionForce(x, y);
             }
-            // Needs to be overridden by every interaction type
             throw new NotImplementedException("InteractionForce() not defined for this Interaction");
         }
     }
@@ -52,19 +54,17 @@ namespace Physics
 
         public Spring(Particle A, Particle B, double springRate = double.MaxValue, double restLength = 0.0)
         {
-            interactionType = InteractionType.Gravity;
+            interactionType = InteractionType.Spring;
             this.A = A; this.B = B;
-            scalarParameters.Clear(); // I don't know if this is necessary in a constructor
-            scalarParameters.Add(new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length));
-            scalarParameters.Add(new Scalar(restLength, DerivedUnits.Length));
+            this.springRate = new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length);
+            this.restLength = new Scalar(restLength, DerivedUnits.Length);
         }
 
         public Spring(double springRate = double.MaxValue, double restLength = 0.0)
         {
-            interactionType = InteractionType.Gravity;
-            scalarParameters.Clear(); // I don't know if this is necessary in a constructor
-            scalarParameters.Add(new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length));
-            scalarParameters.Add(new Scalar(restLength, DerivedUnits.Length));
+            interactionType = InteractionType.Spring;
+            this.springRate = new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length);
+            this.restLength = new Scalar(restLength, DerivedUnits.Length);
         }
 
         public new Force InteractionForce()
@@ -84,6 +84,61 @@ namespace Physics
         public new Force InteractionForce(Particle x, Particle y)
         {
             return InteractionForce(y.position - x.position);
+        }
+    }
+
+    public class Damper : Interaction
+    {
+        public Scalar dampingCoefficient
+        {
+            get { return scalarParameters[0]; }
+            set { scalarParameters[0] = value; }
+        }
+
+        public Damper(double dampingCoefficient)
+        {
+            interactionType = InteractionType.Damper;
+            this.dampingCoefficient =
+                new Scalar(dampingCoefficient, DerivedUnits.Force / DerivedUnits.Velocity);
+        }
+        public Damper(double dampingCoefficient, Particle A, Particle B)
+        {
+            interactionType = InteractionType.Damper;
+            this.dampingCoefficient =
+                new Scalar(dampingCoefficient, DerivedUnits.Force / DerivedUnits.Velocity);
+            this.A = A; this.B = B;
+        }
+        public Damper(Particle A, Particle B, double dampingRatio, double springRate)
+        {
+            interactionType = InteractionType.Damper;
+            double reducedMass = (A.mass * B.mass / (A.mass + B.mass)).value;
+            if (double.IsNaN(reducedMass))
+                reducedMass = A.mass.value;
+            if (double.IsNaN(reducedMass))
+                reducedMass = B.mass.value;
+            double dampingCoefficient = 2.0 * dampingRatio * Math.Sqrt(springRate * reducedMass);
+            this.dampingCoefficient =
+                new Scalar(dampingCoefficient, DerivedUnits.Force / DerivedUnits.Velocity);
+            this.A = A; this.B = B;
+        }
+        public Damper(Spring spring, double dampingRatio)
+        {
+            interactionType = InteractionType.Damper;
+            this.A = spring.A; this.B = spring.B;
+            double reducedMass = (A.mass * B.mass / (A.mass + B.mass)).value;
+            if (double.IsNaN(reducedMass))
+                reducedMass = A.mass.value;
+            if (double.IsNaN(reducedMass))
+                reducedMass = B.mass.value;
+            double dampingCoefficient = 
+                2.0 * dampingRatio * Math.Sqrt((spring.springRate * reducedMass).value);
+            this.dampingCoefficient =
+                new Scalar(dampingCoefficient, DerivedUnits.Force / DerivedUnits.Velocity);
+        }
+
+        public new Force InteractionForce(Particle A, Particle B)
+        {
+            return new Force(dampingCoefficient * (B.velocity() - A.velocity()));
         }
     }
 
