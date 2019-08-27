@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Physics;
-using System.Threading;
 
 namespace Star_System
 {
     public partial class Display : Form
     {
+        int numberOfAsteroids = 256;
+        bool geocentric = false;
+
         Simulation simulation = new Simulation();
 
         public Display()
         {
             InitializeComponent();
-            Task.Run(() => simulation.ImplicitAsyncTest(1000));
+            Task.Run(() => simulation.ImplicitAsyncTest(numberOfAsteroids));
             while (simulation.system.particles.Count == 0)
                 Application.DoEvents();
         }
@@ -42,11 +38,14 @@ namespace Star_System
             chart.ChartAreas["ChartArea"].AxisX.Interval = maxDistance;
             chart.ChartAreas["ChartArea"].AxisY.Interval = maxDistance;
 
+            int centricIndex = 0;
+            if (geocentric)
+                centricIndex = 3;
             while (true)
             {
                 try
                 {
-                    UpdatePlot(0);
+                    UpdatePlot(centricIndex);
                     DateTime time = DateTime.Now;
                     while (DateTime.Now < time.AddMilliseconds(delayTime))
                         Application.DoEvents();
