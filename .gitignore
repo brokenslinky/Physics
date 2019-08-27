@@ -6,10 +6,6 @@
 # Test programs
 [Tt]est/
 
-# Project files
-*.csproj
-*.sln
-
 # User-specific files
 *.suo
 *.user

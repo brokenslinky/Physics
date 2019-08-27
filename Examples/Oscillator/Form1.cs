@@ -32,13 +32,13 @@ namespace Oscillator
 
             Physics.System system = new Physics.System(new List<Particle>() { particle, Earth });
 
-            int numberOfPoints = 5000;
+            int numberOfPoints = 1024;
             Time timeStep = lengthOfSimulation / numberOfPoints;
             chart1.ChartAreas["ChartArea"].AxisX.Maximum = lengthOfSimulation.value;
             for (Time time = new Time(); time <= lengthOfSimulation; time += timeStep)
             {
                 chart1.Series["Series"].Points.AddXY(time.value, particle.position.values[0]);
-                system.Iterate(timeStep);
+                system.Iterate(timeStep); 
             }
             this.Refresh();
         }

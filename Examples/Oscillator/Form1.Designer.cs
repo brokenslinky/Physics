@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.springRateBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -45,20 +45,20 @@
             // 
             // chart1
             // 
-            chartArea1.AxisX.TextOrientation = System.Windows.Forms.DataVisualization.Charting.TextOrientation.Horizontal;
-            chartArea1.AxisX.Title = "Time (seconds)";
-            chartArea1.AxisY.TextOrientation = System.Windows.Forms.DataVisualization.Charting.TextOrientation.Rotated270;
-            chartArea1.AxisY.Title = "Displacement (relative)";
-            chartArea1.Name = "ChartArea";
-            this.chart1.ChartAreas.Add(chartArea1);
+            chartArea2.AxisX.TextOrientation = System.Windows.Forms.DataVisualization.Charting.TextOrientation.Horizontal;
+            chartArea2.AxisX.Title = "Time (seconds)";
+            chartArea2.AxisY.TextOrientation = System.Windows.Forms.DataVisualization.Charting.TextOrientation.Rotated270;
+            chartArea2.AxisY.Title = "Displacement (relative)";
+            chartArea2.Name = "ChartArea";
+            this.chart1.ChartAreas.Add(chartArea2);
             this.chart1.Location = new System.Drawing.Point(13, 13);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-            series1.MarkerColor = System.Drawing.Color.Red;
-            series1.MarkerSize = 1;
-            series1.Name = "Series";
-            this.chart1.Series.Add(series1);
+            series2.ChartArea = "ChartArea";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series2.MarkerColor = System.Drawing.Color.Red;
+            series2.MarkerSize = 1;
+            series2.Name = "Series";
+            this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(775, 300);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart";
@@ -122,7 +122,7 @@
             this.dampingRatioBox.Name = "dampingRatioBox";
             this.dampingRatioBox.Size = new System.Drawing.Size(100, 20);
             this.dampingRatioBox.TabIndex = 6;
-            this.dampingRatioBox.Text = "0.7";
+            this.dampingRatioBox.Text = "0";
             // 
             // label4
             // 

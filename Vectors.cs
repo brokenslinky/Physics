@@ -12,6 +12,8 @@ namespace Physics
 
         public void Add(double value) { _values.Add(value); }
 
+        public override string ToString() { return Magnitude().value.ToString(); }
+
         public DerivedUnits units { get { return _units; } set { _units = value; } }
         public Vector(List<double> values, DerivedUnits units)
         {

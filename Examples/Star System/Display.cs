@@ -12,21 +12,14 @@ using System.Threading;
 
 namespace Star_System
 {
-
     public partial class Display : Form
     {
         Simulation simulation = new Simulation();
 
-        class Coordinates
-        {
-            public double x, y;
-            public Coordinates(double x, double y) { this.x = x; this.y = y; }
-        }
-
         public Display()
         {
             InitializeComponent();
-            Task.Run(() => simulation.ImplicitAsyncTest(10));
+            Task.Run(() => simulation.ImplicitAsyncTest(1000));
             while (simulation.system.particles.Count == 0)
                 Application.DoEvents();
         }

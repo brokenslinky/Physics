@@ -16,6 +16,14 @@ namespace Physics
         internal InteractionType interactionType;
         internal Scalar[] scalarParameters = new Scalar[4];
 
+        public Interaction() { }
+        public Interaction(Interaction interaction)
+        {
+            A = interaction.A; B = interaction.B;
+            interactionType = interaction.interactionType;
+            scalarParameters = interaction.scalarParameters;
+        }
+
         public Force InteractionForce()
         {
             return InteractionForce(A, B);

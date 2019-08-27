@@ -12,7 +12,7 @@ namespace Star_System
     class Simulation
     {
         internal static readonly Time day = new Time(86400.0);
-        internal static Time timeStep = day / 10.0;
+        internal static Time timeStep = day / 1.0;
 
         public Physics.System system = new Physics.System();
         public List<CelestialBody> Bodies = new List<CelestialBody>();
