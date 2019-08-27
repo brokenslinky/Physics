@@ -36,6 +36,8 @@
             // 
             // chart
             // 
+            this.chart.BackColor = System.Drawing.Color.Black;
+            this.chart.BorderlineColor = System.Drawing.Color.Black;
             chartArea1.AxisX.Crossing = -1.7976931348623157E+308D;
             chartArea1.AxisX.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.False;
             chartArea1.AxisX.InterlacedColor = System.Drawing.Color.Black;
@@ -70,10 +72,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(781, 781);
             this.Controls.Add(this.chart);
             this.Name = "Display";
-            this.Text = "Start System";
+            this.Text = "Star System";
             this.Disposed += new System.EventHandler(this.Display_Disposed);
             ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.ResumeLayout(false);

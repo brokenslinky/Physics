@@ -83,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Physics.csproj">
-      <Project>{798f1dfe-d74c-431f-9a23-8efcac9541c6}</Project>
+      <Project>{b4011628-82a6-4caa-80d6-4d5ace095436}</Project>
       <Name>Physics</Name>
     </ProjectReference>
   </ItemGroup>
