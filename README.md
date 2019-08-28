@@ -11,4 +11,3 @@
     Define vector division (return a tensor)?
 	PhysicalSystem.Iterate() calculates every interactionForce twice (once per particle). Is there a better way?
 	    - Is it more efficient to loop through Interactions rather than Particles and use a Mutex on each netForce to prevent thread collisions?
-

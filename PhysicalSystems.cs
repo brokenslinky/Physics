@@ -1,13 +1,14 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Physics
 {
+    /// <summary>
+    /// A PhysicalSystem is a collection of Particles and Interactions.
+    /// </summary>
     public class PhysicalSystem
     {
+        // Can I give the user direct access to members of the Particles without making this public?
         public List<Particle> particles = new List<Particle>();
 
         private List<Interaction> _interactions = new List<Interaction>();
@@ -41,8 +42,8 @@ namespace Physics
         /// Update the positions and momenta of all particles in the system using Runge-Kutta method... 
         /// Does not seem to be working correctly. Leave private until debugged.
         /// </summary>
-        /// <param name="timeStep">The amount of time passing during this iteration</param>
-        private void RK4Iterate(Time timeStep)
+        /// <param name="timeInterval">The amount of time passing during this iteration</param>
+        private void RK4Iterate(Time timeInterval)
         {
             List<Task> tasks = new List<Task>();
             // store temporary particle data for Runge-Kutta method
@@ -123,10 +124,10 @@ namespace Physics
             async Task CalculateRungeKuttaCoefficients(int particleIndex, int iterationNumber)
             {
                 displacements[particleIndex, iterationNumber] =
-                    timeStep * particles[particleIndex].Velocity();
+                    timeInterval * particles[particleIndex].Velocity();
                 foreach (Interaction interaction in virtualParticles[particleIndex].interactions)
                     momenta[particleIndex, iterationNumber] +=
-                        timeStep * interaction.InteractionForce(virtualParticles[particleIndex], interaction.B);
+                        timeInterval * interaction.InteractionForce(virtualParticles[particleIndex], interaction.B);
             }
 
             async Task UpdateParticleBefore2ndOr3rdIteration(int particleIndex, int iterationJustFinished)
@@ -164,10 +165,11 @@ namespace Physics
 
         /// <summary>
         /// Update the positions and momenta of all particles in the system 
-        /// using the 2nd-order Runge-Kutta method
+        /// using the 2nd-order Runge-Kutta method. 
+        /// Doesn't perform as well as NotQuiteRK2(). Am I interpretting the Runge-Kutta method incorrectly?
         /// </summary>
-        /// <param name="timeStep">The amount of time passing during this iteration</param>
-        private void RK2Iterate(Time timeStep)
+        /// <param name="timeInterval">The amount of time passing during this iteration</param>
+        private void RK2Iterate(Time timeInterval)
         {
             List<Task> tasks = new List<Task>();
             // store temporary particle data for Runge-Kutta method
@@ -209,8 +211,8 @@ namespace Physics
                 foreach (Interaction interaction in particles[particleIndex].interactions)
                     netForce += interaction.InteractionForce();
                 // The first iteration in RK2 only moves a half step.
-                Momentum changeInMomentum = timeStep * netForce / 2.0;
-                particles[particleIndex].position += timeStep *
+                Momentum changeInMomentum = timeInterval * netForce / 2.0;
+                particles[particleIndex].position += timeInterval *
                     particles[particleIndex].Velocity(
                     particles[particleIndex].momentum + changeInMomentum / 2.0) / 2.0;
                 particles[particleIndex].momentum += changeInMomentum;
@@ -221,14 +223,18 @@ namespace Physics
                 Force netForce = new Force();
                 foreach (Interaction interaction in particles[particleIndex].interactions)
                     netForce += interaction.InteractionForce();
-                Momentum changeInMomentum = timeStep * netForce;
-                particles[particleIndex].position = initialPositions[particleIndex] + timeStep *
+                Momentum changeInMomentum = timeInterval * netForce;
+                particles[particleIndex].position = initialPositions[particleIndex] + timeInterval *
                     particles[particleIndex].Velocity(
                     particles[particleIndex].momentum + changeInMomentum / 2.0);
                 particles[particleIndex].momentum = initialMomenta[particleIndex] + changeInMomentum;
             }
         }
 
+        /// <summary>
+        /// A modified version of the 2nd-order Runge-Kutta method
+        /// </summary>
+        /// <param name="timeStep"></param>
         private void NotQuiteRK2(Time timeStep)
         {
             List<Task> tasks = new List<Task>();
