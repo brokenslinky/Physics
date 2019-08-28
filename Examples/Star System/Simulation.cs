@@ -11,66 +11,12 @@ namespace Star_System
         internal static readonly Time day = new Time(86400.0);
         internal static Time timeStep = day / 1.0;
 
-        public Physics.PhysicalSystem system = new Physics.PhysicalSystem();
+        public PhysicalSystem system = new PhysicalSystem();
         public List<CelestialBody> Bodies = new List<CelestialBody>();
 
         internal static List<Force> netForces = new List<Force>();
 
         bool end = false;
-
-        public async Task CalculateForce(int bodyIndex, int maxGravityContributors = 9)
-        {
-            try
-            {
-                // calculate force
-                Force netForce = new Force();
-                for (int j = 0; j < maxGravityContributors; j++)
-                {
-                    if (bodyIndex != j)
-                        netForce += Gravity.InteractionForce(Bodies[bodyIndex], Bodies[j]);
-                }
-                netForces[bodyIndex] = netForce;
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
-        }
-
-        public async Task CalculateForces(int bodyIndexStart, int bodyIndexEnd, int maxGravityContributors = 9)
-        {
-            try
-            {
-                for (int bodyIndex = bodyIndexStart; bodyIndex <= bodyIndexEnd; bodyIndex++)
-                {
-                    // calculate force
-                    Force netForce = new Force();
-                    for (int j = 0; j < maxGravityContributors; j++)
-                    {
-                        if (bodyIndex != j)
-                            netForce += Gravity.InteractionForce(Bodies[bodyIndex], Bodies[j]);
-                    }
-                    netForces[bodyIndex] = netForce;
-                }
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
-        }
-
-        public async Task MoveBody(int bodyIndex)
-        {
-            try
-            {
-                Bodies[bodyIndex].Iterate(timeStep, netForces[bodyIndex]);
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
-        }
-
-        public async Task MoveBodies(int bodyIndexStart, int bodyIndexEnd)
-        {
-            try
-            {
-                for (int bodyIndex = bodyIndexStart; bodyIndex <= bodyIndexEnd; bodyIndex++)
-                    Bodies[bodyIndex].Iterate(timeStep, netForces[bodyIndex]);
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
-        }
 
         public async Task ImplicitAsyncTest(int numberOfAsteroids = 0)
         {
@@ -80,97 +26,6 @@ namespace Star_System
             {
                 try { system.Iterate(timeStep); }
                 catch(Exception ex) { MessageBox.Show(ex.Message); }
-            }
-        }
-
-        public async Task Orbital_Simulation_Async(int numberOfAsteroids = 100, int maxGravityContributors = 9)
-        {
-            Bodies = GetCelestialBodies(numberOfAsteroids);
-            if (maxGravityContributors > Bodies.Count)
-                maxGravityContributors = Bodies.Count;
-
-            netForces = new List<Force>(new Force[Bodies.Count]);
-
-            while (!end)
-            {
-                try
-                {
-                    List<Task> tasks = new List<Task>();
-
-                    // Calculate all forces before moving anything
-                    for (int bodyIndex = 0; bodyIndex < Bodies.Count; bodyIndex ++)
-                    {
-                        int i = bodyIndex; // apparently I need a value that goes out of scope...
-                        // start a new thread to calculate forces on these bodies
-                        tasks.Add(CalculateForce(i, maxGravityContributors));
-                    }
-
-                    Task.WaitAll(tasks.ToArray());
-
-                    // Move every body at once
-                    for (int bodyIndex = 0; bodyIndex < Bodies.Count; bodyIndex ++)
-                    {
-                        int i = bodyIndex; // again, I need a value that goes out of scope before the next thread starts
-                        // start a new thread to move these bodies
-                        tasks.Add(MoveBody(i));
-                    }
-
-                    Task.WaitAll(tasks.ToArray());
-                }
-                catch (Exception ex) { MessageBox.Show(ex.Message); }
-            }
-            MessageBox.Show("Simulation has ended");
-        }
-
-        public async Task Orbital_Simulation(int numberOfAsteroids = 100, int maxGravityContributors = 9)
-        {
-            Bodies = GetCelestialBodies(numberOfAsteroids);
-            if (maxGravityContributors > Bodies.Count)
-                maxGravityContributors = Bodies.Count;
-
-
-            while (!end)
-            {
-                try
-                {
-                    netForces.Clear();
-
-                    // calculate the force acting on each body
-                    for (int i = 0; i < Bodies.Count; i++)
-                    {
-                        Force netForce = new Force();
-                        for (int j = 0; j < maxGravityContributors; j++)
-                        {
-                            if (i == j)
-                                continue;
-                            netForce += Gravity.InteractionForce(Bodies[i], Bodies[j]);
-                        }
-                        netForces.Add(netForce);
-                    }
-
-                    // now positions can update based on net forces
-                    for (int i = 0; i < Bodies.Count; i++)
-                    {
-                        Bodies[i].Iterate(timeStep, netForces[i]);
-                    }
-                }
-                catch (Exception ex) { MessageBox.Show(ex.Message); }
-            }
-        }
-        
-        public void AssignInteractions(int maxGravityContributors = int.MaxValue)
-        {
-            if (maxGravityContributors > Bodies.Count)
-                maxGravityContributors = Bodies.Count;
-            foreach (CelestialBody body in Bodies)
-            {
-                for (int i = 0; i < maxGravityContributors; i++)
-                {
-                    if (Bodies[i] != body)
-                    {
-                        body.interactions.Add(new Gravity(body, Bodies[i]));
-                    }
-                }
             }
         }
 

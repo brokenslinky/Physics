@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Star_System
 {
-    static class Program
+    static class StarSystem
     {
         /// <summary>
         /// The main entry point for the application.
