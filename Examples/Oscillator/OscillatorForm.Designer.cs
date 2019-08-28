@@ -1,6 +1,6 @@
 ﻿namespace Oscillator
 {
-    partial class Form1
+    partial class OscillatorForm
     {
         /// <summary>
         /// Required designer variable.
