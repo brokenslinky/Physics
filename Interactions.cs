@@ -79,6 +79,18 @@ namespace Physics
         }
 
         /// <summary>
+        /// Create a new Spring
+        /// </summary>
+        /// <param name="springRate"></param>
+        /// <param name="restLength"></param>
+        public Spring(double springRate = double.MaxValue, double restLength = 0.0)
+        {
+            interactionType = InteractionType.Spring;
+            this.SpringRate = new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length);
+            this.RestLength = new Scalar(restLength, DerivedUnits.Length);
+        }
+
+        /// <summary>
         /// The Force of this Interaction
         /// </summary>
         /// <returns>The Force of this Interaction</returns>
@@ -113,8 +125,14 @@ namespace Physics
         }
     }
 
+    /// <summary>
+    /// A damper applies force contrary to motion
+    /// </summary>
     public class Damper : Interaction
     {
+        /// <summary>
+        /// The dampingCoefficient has units of Force per Velocity
+        /// </summary>
         public Scalar dampingCoefficient
         {
             get { return scalarParameters[0]; }
@@ -127,7 +145,7 @@ namespace Physics
             this.dampingCoefficient =
                 new Scalar(dampingCoefficient, DerivedUnits.Force / DerivedUnits.Velocity);
         }
-        public Damper(double dampingCoefficient, Particle A, Particle B)
+        public Damper(Particle A, Particle B, double dampingCoefficient)
         {
             interactionType = InteractionType.Damper;
             this.dampingCoefficient =
@@ -162,9 +180,26 @@ namespace Physics
                 new Scalar(dampingCoefficient, DerivedUnits.Force / DerivedUnits.Velocity);
         }
 
+        /// <summary>
+        /// Force due to the damper on Particles A and B
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns>Force due to the damper on Particles A and B</returns>
         public new Force InteractionForce(Particle A, Particle B)
         {
             return new Force(dampingCoefficient * (B.Velocity() - A.Velocity()));
+        }
+
+        /// <summary>
+        /// Force due to the damper on Particles A and B
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns>Force due to the damper on Particles A and B</returns>
+        public new Force InteractionForce()
+        {
+            return InteractionForce(A, B);
         }
     }
 
