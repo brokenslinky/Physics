@@ -123,7 +123,7 @@ namespace Physics
             async Task CalculateRungeKuttaCoefficients(int particleIndex, int iterationNumber)
             {
                 displacements[particleIndex, iterationNumber] =
-                    timeStep * particles[particleIndex].velocity();
+                    timeStep * particles[particleIndex].Velocity();
                 foreach (Interaction interaction in virtualParticles[particleIndex].interactions)
                     momenta[particleIndex, iterationNumber] +=
                         timeStep * interaction.InteractionForce(virtualParticles[particleIndex], interaction.B);
@@ -211,7 +211,7 @@ namespace Physics
                 // The first iteration in RK2 only moves a half step.
                 Momentum changeInMomentum = timeStep * netForce / 2.0;
                 particles[particleIndex].position += timeStep *
-                    particles[particleIndex].velocity(
+                    particles[particleIndex].Velocity(
                     particles[particleIndex].momentum + changeInMomentum / 2.0) / 2.0;
                 particles[particleIndex].momentum += changeInMomentum;
             }
@@ -223,7 +223,7 @@ namespace Physics
                     netForce += interaction.InteractionForce();
                 Momentum changeInMomentum = timeStep * netForce;
                 particles[particleIndex].position = initialPositions[particleIndex] + timeStep *
-                    particles[particleIndex].velocity(
+                    particles[particleIndex].Velocity(
                     particles[particleIndex].momentum + changeInMomentum / 2.0);
                 particles[particleIndex].momentum = initialMomenta[particleIndex] + changeInMomentum;
             }
@@ -282,7 +282,7 @@ namespace Physics
             async Task CalculateRungeKuttaCoefficients(int particleIndex, int iterationNumber)
             {
                 displacements[particleIndex, iterationNumber] =
-                    timeStep * particles[particleIndex].velocity();
+                    timeStep * particles[particleIndex].Velocity();
                 momenta[particleIndex, iterationNumber] = new Momentum();
                 foreach (Interaction interaction in particles[particleIndex].interactions)
                     momenta[particleIndex, iterationNumber] +=
@@ -291,7 +291,7 @@ namespace Physics
 
             async Task LinearUpdate(int particleIndex)
             {
-                particles[particleIndex].position += timeStep * particles[particleIndex].velocity(
+                particles[particleIndex].position += timeStep * particles[particleIndex].Velocity(
                     particles[particleIndex].momentum + momenta[particleIndex, 0] / 2.0);
                 particles[particleIndex].momentum += momenta[particleIndex, 0];
             }

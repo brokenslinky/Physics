@@ -146,7 +146,7 @@ namespace Physics
 
         public new Force InteractionForce(Particle A, Particle B)
         {
-            return new Force(dampingCoefficient * (B.velocity() - A.velocity()));
+            return new Force(dampingCoefficient * (B.Velocity() - A.Velocity()));
         }
     }
 
