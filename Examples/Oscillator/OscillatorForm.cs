@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Physics;
 
@@ -30,7 +24,7 @@ namespace Oscillator
             particle.interactions.Add(damper);
             particle.position.values[0] = 1.0;
 
-            Physics.PhysicalSystem system = new Physics.PhysicalSystem(new List<Particle>() { particle, Earth });
+            PhysicalSystem system = new PhysicalSystem(new List<Particle>() { particle, Earth });
 
             int numberOfPoints = 1024;
             Time timeStep = lengthOfSimulation / numberOfPoints;
