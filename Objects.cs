@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace Physics
 {
-    public class System
+    public class PhysicalSystem
     {
         public List<Particle> particles = new List<Particle>();
 
         private List<Interaction> _interactions = new List<Interaction>();
 
-        public System()
+        public PhysicalSystem()
         {
             particles = new List<Particle>();
             _interactions = new List<Interaction>();
         }
-        public System(List<Particle> particles)
+        public PhysicalSystem(List<Particle> particles)
         {
             this.particles = particles;
             _interactions = new List<Interaction>();
         }
-        public System(List<Particle> particles, List<Interaction> interactions)
+        public PhysicalSystem(List<Particle> particles, List<Interaction> interactions)
         {
             this.particles = particles;
             _interactions = interactions;

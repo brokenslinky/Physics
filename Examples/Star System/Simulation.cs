@@ -11,7 +11,7 @@ namespace Star_System
         internal static readonly Time day = new Time(86400.0);
         internal static Time timeStep = day / 1.0;
 
-        public Physics.System system = new Physics.System();
+        public Physics.PhysicalSystem system = new Physics.PhysicalSystem();
         public List<CelestialBody> Bodies = new List<CelestialBody>();
 
         internal static List<Force> netForces = new List<Force>();
@@ -74,7 +74,7 @@ namespace Star_System
 
         public async Task ImplicitAsyncTest(int numberOfAsteroids = 0)
         {
-            system = new Physics.System(new List<Particle>(GetCelestialBodies(numberOfAsteroids)));
+            system = new Physics.PhysicalSystem(new List<Particle>(GetCelestialBodies(numberOfAsteroids)));
 
             while(!end)
             {

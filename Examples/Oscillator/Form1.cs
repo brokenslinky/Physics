@@ -30,7 +30,7 @@ namespace Oscillator
             particle.interactions.Add(damper);
             particle.position.values[0] = 1.0;
 
-            Physics.System system = new Physics.System(new List<Particle>() { particle, Earth });
+            Physics.PhysicalSystem system = new Physics.PhysicalSystem(new List<Particle>() { particle, Earth });
 
             int numberOfPoints = 1024;
             Time timeStep = lengthOfSimulation / numberOfPoints;
