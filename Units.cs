@@ -27,7 +27,10 @@ namespace Physics
         public static readonly DerivedUnits RotationalInertia = Mass * Length * Length;
         public static readonly DerivedUnits AngularMomentum = RotationalInertia * AngularVelocity;
 
-        public static readonly Dictionary<double, string> UnitType = new Dictionary<double, string>()
+        /// <summary>
+        /// Convert the DerivedUnits unitType key to a human-readable string
+        /// </summary>
+        private static readonly Dictionary<double, string> UnitType = new Dictionary<double, string>()
         {
             { Unitless._unitType, "Unitless" },
             { Length._unitType, "Length" },
@@ -46,17 +49,37 @@ namespace Physics
 
         internal double _unitType = 1.0;
 
+        #region Constructors
         public DerivedUnits(BaseUnits baseUnit) { _unitType = (double)baseUnit; }
         public DerivedUnits(double unitValue) { this._unitType = unitValue; }
         public DerivedUnits(DerivedUnits derivedUnits) { new DerivedUnits(derivedUnits._unitType); }
         public DerivedUnits() { new DerivedUnits(Unitless); }
+        #endregion
 
+        #region Mathods()
+
+        /// <summary>
+        /// Human-readable form of the unitType
+        /// </summary>
+        /// <returns>A string representation of the unitType</returns>
         public string getUnitType()
         {
             try { return UnitType[_unitType]; }
             catch { return "Unknown unit"; }
         }
+        /// <summary>
+        /// Human-readable form of the unitType
+        /// </summary>
+        /// <returns>A string representation of the unitType</returns>
+        public string getUnitType(DerivedUnits units)
+        {
+            try { return UnitType[units._unitType]; }
+            catch { return "Unknown unit"; }
+        }
 
+        #endregion
+
+        #region operators
         public static DerivedUnits operator *(DerivedUnits X, DerivedUnits Y)
         {
             return new DerivedUnits(X._unitType * Y._unitType);
@@ -73,6 +96,7 @@ namespace Physics
         {
             return X._unitType != Y._unitType;
         }
+        #endregion
     }
 
     public class UnitMismatchException : Exception
