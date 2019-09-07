@@ -232,10 +232,10 @@ namespace Physics
         }
 
         /// <summary>
-        /// A modified version of the 2nd-order Runge-Kutta method
+        /// Heun's method for numerical integration
         /// </summary>
         /// <param name="timeStep"></param>
-        private void NotQuiteRK2(Time timeStep)
+        private void HeunIntegration(Time timeStep)
         {
             List<Task> tasks = new List<Task>();
             // store temporary particle data for Runge-Kutta method
@@ -318,8 +318,8 @@ namespace Physics
         /// <param name="timeStep"></param>
         public void Iterate(Time timeStep)
         {
-            NotQuiteRK2(timeStep); 
-            //RK2Iterate(timeStep);
+            HeunIntegration(timeStep); 
+            //RK4Iterate(timeStep);
             // This seems to outperform the real Runge-Kutta method for the relationship between position and momentum
         }
     }
