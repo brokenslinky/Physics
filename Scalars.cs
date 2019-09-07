@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Physics
 {
+    /// <summary>
+    /// A Scalar has magnitude and units
+    /// </summary>
     public class Scalar
     {
         DerivedUnits _units = new DerivedUnits(1.0);
@@ -11,14 +14,15 @@ namespace Physics
         public double value { get { return _value; } set { _value = value; } }
         public DerivedUnits units { get { return _units; } set { _units = value; } }
 
+        #region Constructors
         public Scalar(double value, DerivedUnits units) { _value = value; _units = units; }
         public Scalar(double value = 0.0) { _value = value; }
-
         public Scalar(Scalar scalar)
         {
             _value = scalar.value;
             _units = scalar.units;
         }
+        #endregion
 
         #region Operations
 
