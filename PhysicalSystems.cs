@@ -289,10 +289,10 @@ namespace Physics
             {
                 displacements[particleIndex, iterationNumber] =
                     timeStep * particles[particleIndex].Velocity();
-                momenta[particleIndex, iterationNumber] = new Momentum();
+                Force netForce = new Force();
                 foreach (Interaction interaction in particles[particleIndex].interactions)
-                    momenta[particleIndex, iterationNumber] +=
-                        timeStep * interaction.InteractionForce();
+                    netForce += interaction.InteractionForce();
+                momenta[particleIndex, iterationNumber] = timeStep * netForce;
             }
 
             async Task LinearUpdate(int particleIndex)
@@ -319,6 +319,7 @@ namespace Physics
         public void Iterate(Time timeStep)
         {
             NotQuiteRK2(timeStep); 
+            //RK2Iterate(timeStep);
             // This seems to outperform the real Runge-Kutta method for the relationship between position and momentum
         }
     }
