@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Physics
 {
+    /// <summary>
+    /// A Vector has Magnitude(), Direction(), and Units
+    /// </summary>
     public class Vector
     {
         DerivedUnits _units = DerivedUnits.Unitless;
@@ -10,11 +13,7 @@ namespace Physics
 
         public List<double> values { get { return _values; } set { _values = value; } }
 
-        public void Add(double value) { _values.Add(value); }
-
-        public override string ToString() { return Magnitude().value.ToString(); }
-
-        public DerivedUnits units { get { return _units; } set { _units = value; } }
+        #region Constructors
         public Vector(List<double> values, DerivedUnits units)
         {
             _values = values;
@@ -33,7 +32,31 @@ namespace Physics
             values = X.values;
             units = X.units;
         }
+        #endregion
 
+        #region Methods()
+
+        /// <summary>
+        /// Add a new dimension to the Vector with the specified value
+        /// </summary>
+        /// <param name="value"></param>
+        public void Add(double value = 0.0) { _values.Add(value); }
+
+        /// <summary>
+        /// Convert the Vector to a string
+        /// </summary>
+        /// <returns>The Magnitude() of the Vector as a string</returns>
+        public override string ToString() { return Magnitude().value.ToString(); }
+
+        /// <summary>
+        /// The type of unit
+        /// </summary>
+        public DerivedUnits units { get { return _units; } set { _units = value; } }
+
+        /// <summary>
+        /// The Magnitude of the Vector expressed as a Scalar
+        /// </summary>
+        /// <returns>The Magnitude of the Vector expressed as a Scalar</returns>
         public Scalar Magnitude()
         {
             double magnitude = 0.0;
@@ -43,6 +66,10 @@ namespace Physics
             return new Scalar(magnitude, units);
         }
 
+        /// <summary>
+        /// The Direction of the Vector expressed as a List<double> with Magnitude of 1
+        /// </summary>
+        /// <returns>The Direction of the Vector expressed as a List<double> with Magnitude of 1</returns>
         public List<double> Direction()
         {
             double magnitude = this.Magnitude().value;
@@ -51,6 +78,8 @@ namespace Physics
                 direction.Add(value / magnitude);
             return direction;
         }
+
+        #endregion
 
         #region Operators
 

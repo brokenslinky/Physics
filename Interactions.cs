@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Physics
 {
-    enum InteractionType
+    public enum InteractionType
     {
         Gravity,
         Spring,
         Damper
     }
 
+    /// <summary>
+    /// An Interaction between Particles A and B
+    /// </summary>
     public class Interaction
     {
         public Particle A, B;
         internal InteractionType interactionType;
         internal Scalar[] scalarParameters = new Scalar[4];
 
-        public Interaction() { }
+        internal Interaction() { }
         public Interaction(Interaction interaction)
         {
             A = interaction.A; B = interaction.B;
@@ -24,30 +26,31 @@ namespace Physics
             scalarParameters = interaction.scalarParameters;
         }
 
+        /// <summary>
+        /// The force of this Interaction (on Particle A due to B)
+        /// </summary>
+        /// <returns>The force of this Interaction (on Particle A due to B)</returns>
         public Force InteractionForce()
         {
             return InteractionForce(A, B);
         }
 
-        public Force InteractionForce(Displacement XtoY)
-        {
-            // return the Force on x due to this interaction with y
-            // this will be MINUS the Force on y due to this interaction with x
-
-            // This method needs to be overloaded for each interaction type
-
-            throw new NotImplementedException("InteractionForce() not defined for this Interaction");
-        }
-        public Force InteractionForce(Particle x, Particle y)
+        /// <summary>
+        /// The force of this interactionType on Particles A nd B
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
+        public Force InteractionForce(Particle A, Particle B)
         {
             switch (interactionType)
             {
                 case InteractionType.Gravity:
-                    return Gravity.InteractionForce(x, y);
+                    return Gravity.InteractionForce(A, B);
                 case InteractionType.Spring:
-                    return ((Spring)this).InteractionForce(x, y);
+                    return ((Spring)this).InteractionForce(A, B);
                 case InteractionType.Damper:
-                    return ((Damper)this).InteractionForce(x, y);
+                    return ((Damper)this).InteractionForce(A, B);
             }
             throw new NotImplementedException("InteractionForce() not defined for this Interaction");
         }
@@ -55,48 +58,81 @@ namespace Physics
 
     public class Spring : Interaction
     {
-        public Scalar springRate
+        public Scalar SpringRate
         { get { return scalarParameters[0]; } set { scalarParameters[0] = value; } }
-        public Scalar restLength
+        public Scalar RestLength
         { get { return scalarParameters[1]; } set { scalarParameters[1] = value; } }
 
-        public Spring(Particle A, Particle B, double springRate = double.MaxValue, double restLength = 0.0)
+        /// <summary>
+        /// A spring connecting Particles A and B
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <param name="springRate"></param>
+        /// <param name="restLength"></param>
+        public Spring(Particle A, Particle B, double springRate, double restLength = 0.0)
         {
             interactionType = InteractionType.Spring;
             this.A = A; this.B = B;
-            this.springRate = new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length);
-            this.restLength = new Scalar(restLength, DerivedUnits.Length);
+            this.SpringRate = new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length);
+            this.RestLength = new Scalar(restLength, DerivedUnits.Length);
         }
 
+        /// <summary>
+        /// Create a new Spring
+        /// </summary>
+        /// <param name="springRate"></param>
+        /// <param name="restLength"></param>
         public Spring(double springRate = double.MaxValue, double restLength = 0.0)
         {
             interactionType = InteractionType.Spring;
-            this.springRate = new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length);
-            this.restLength = new Scalar(restLength, DerivedUnits.Length);
+            this.SpringRate = new Scalar(springRate, DerivedUnits.Force / DerivedUnits.Length);
+            this.RestLength = new Scalar(restLength, DerivedUnits.Length);
         }
 
+        /// <summary>
+        /// The Force of this Interaction
+        /// </summary>
+        /// <returns>The Force of this Interaction</returns>
         public new Force InteractionForce()
         {
             return InteractionForce(A, B);
         }
 
-        public new Force InteractionForce(Displacement xToY) 
+        /// <summary>
+        /// The force this spring would apply if stretched/compressed to the given Displacement
+        /// </summary>
+        /// <param name="xToY"></param>
+        /// <returns>The force this spring would apply if stretched/compressed to the given Displacement</returns>
+        public Force InteractionForce(Displacement xToY) 
         {
             // <summary> returns force on x due to y </summary>
             if (xToY.units != DerivedUnits.Length)
                 throw new UnitMismatchException();
-            Scalar magnitude = springRate * (xToY.Magnitude() - restLength);
+            Scalar magnitude = SpringRate * (xToY.Magnitude() - RestLength);
             return new Force(magnitude * xToY.Direction());
         }
 
-        public new Force InteractionForce(Particle x, Particle y)
+        /// <summary>
+        /// The Force applied by this Spring on Particles A and B
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns>The Force applied by this Spring on Particles A and B</returns>
+        public new Force InteractionForce(Particle A, Particle B)
         {
-            return InteractionForce(y.position - x.position);
+            return InteractionForce(B.position - A.position);
         }
     }
 
+    /// <summary>
+    /// A damper applies force contrary to motion
+    /// </summary>
     public class Damper : Interaction
     {
+        /// <summary>
+        /// The dampingCoefficient has units of Force per Velocity
+        /// </summary>
         public Scalar dampingCoefficient
         {
             get { return scalarParameters[0]; }
@@ -109,7 +145,7 @@ namespace Physics
             this.dampingCoefficient =
                 new Scalar(dampingCoefficient, DerivedUnits.Force / DerivedUnits.Velocity);
         }
-        public Damper(double dampingCoefficient, Particle A, Particle B)
+        public Damper(Particle A, Particle B, double dampingCoefficient)
         {
             interactionType = InteractionType.Damper;
             this.dampingCoefficient =
@@ -139,14 +175,31 @@ namespace Physics
             if (double.IsNaN(reducedMass))
                 reducedMass = B.mass.value;
             double dampingCoefficient = 
-                2.0 * dampingRatio * Math.Sqrt((spring.springRate * reducedMass).value);
+                2.0 * dampingRatio * Math.Sqrt((spring.SpringRate * reducedMass).value);
             this.dampingCoefficient =
                 new Scalar(dampingCoefficient, DerivedUnits.Force / DerivedUnits.Velocity);
         }
 
+        /// <summary>
+        /// Force due to the damper on Particles A and B
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns>Force due to the damper on Particles A and B</returns>
         public new Force InteractionForce(Particle A, Particle B)
         {
-            return new Force(dampingCoefficient * (B.velocity() - A.velocity()));
+            return new Force(dampingCoefficient * (B.Velocity() - A.Velocity()));
+        }
+
+        /// <summary>
+        /// Force due to the damper on Particles A and B
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns>Force due to the damper on Particles A and B</returns>
+        public new Force InteractionForce()
+        {
+            return InteractionForce(A, B);
         }
     }
 

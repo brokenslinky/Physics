@@ -1,28 +1,29 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Physics
 {
-    public class System
+    /// <summary>
+    /// A PhysicalSystem is a collection of Particles and Interactions.
+    /// </summary>
+    public class PhysicalSystem
     {
+        // Can I give the user direct access to members of the Particles without making this public?
         public List<Particle> particles = new List<Particle>();
 
         private List<Interaction> _interactions = new List<Interaction>();
 
-        public System()
+        public PhysicalSystem()
         {
             particles = new List<Particle>();
             _interactions = new List<Interaction>();
         }
-        public System(List<Particle> particles)
+        public PhysicalSystem(List<Particle> particles)
         {
             this.particles = particles;
             _interactions = new List<Interaction>();
         }
-        public System(List<Particle> particles, List<Interaction> interactions)
+        public PhysicalSystem(List<Particle> particles, List<Interaction> interactions)
         {
             this.particles = particles;
             _interactions = interactions;
@@ -41,8 +42,8 @@ namespace Physics
         /// Update the positions and momenta of all particles in the system using Runge-Kutta method... 
         /// Does not seem to be working correctly. Leave private until debugged.
         /// </summary>
-        /// <param name="timeStep">The amount of time passing during this iteration</param>
-        private void RK4Iterate(Time timeStep)
+        /// <param name="timeInterval">The amount of time passing during this iteration</param>
+        private void RK4Iterate(Time timeInterval)
         {
             List<Task> tasks = new List<Task>();
             // store temporary particle data for Runge-Kutta method
@@ -123,10 +124,10 @@ namespace Physics
             async Task CalculateRungeKuttaCoefficients(int particleIndex, int iterationNumber)
             {
                 displacements[particleIndex, iterationNumber] =
-                    timeStep * particles[particleIndex].velocity();
+                    timeInterval * particles[particleIndex].Velocity();
                 foreach (Interaction interaction in virtualParticles[particleIndex].interactions)
                     momenta[particleIndex, iterationNumber] +=
-                        timeStep * interaction.InteractionForce(virtualParticles[particleIndex], interaction.B);
+                        timeInterval * interaction.InteractionForce(virtualParticles[particleIndex], interaction.B);
             }
 
             async Task UpdateParticleBefore2ndOr3rdIteration(int particleIndex, int iterationJustFinished)
@@ -164,10 +165,11 @@ namespace Physics
 
         /// <summary>
         /// Update the positions and momenta of all particles in the system 
-        /// using the 2nd-order Runge-Kutta method
+        /// using the 2nd-order Runge-Kutta method. 
+        /// Doesn't perform as well as NotQuiteRK2(). Am I interpretting the Runge-Kutta method incorrectly?
         /// </summary>
-        /// <param name="timeStep">The amount of time passing during this iteration</param>
-        private void RK2Iterate(Time timeStep)
+        /// <param name="timeInterval">The amount of time passing during this iteration</param>
+        private void RK2Iterate(Time timeInterval)
         {
             List<Task> tasks = new List<Task>();
             // store temporary particle data for Runge-Kutta method
@@ -209,9 +211,9 @@ namespace Physics
                 foreach (Interaction interaction in particles[particleIndex].interactions)
                     netForce += interaction.InteractionForce();
                 // The first iteration in RK2 only moves a half step.
-                Momentum changeInMomentum = timeStep * netForce / 2.0;
-                particles[particleIndex].position += timeStep *
-                    particles[particleIndex].velocity(
+                Momentum changeInMomentum = timeInterval * netForce / 2.0;
+                particles[particleIndex].position += timeInterval *
+                    particles[particleIndex].Velocity(
                     particles[particleIndex].momentum + changeInMomentum / 2.0) / 2.0;
                 particles[particleIndex].momentum += changeInMomentum;
             }
@@ -221,15 +223,19 @@ namespace Physics
                 Force netForce = new Force();
                 foreach (Interaction interaction in particles[particleIndex].interactions)
                     netForce += interaction.InteractionForce();
-                Momentum changeInMomentum = timeStep * netForce;
-                particles[particleIndex].position = initialPositions[particleIndex] + timeStep *
-                    particles[particleIndex].velocity(
+                Momentum changeInMomentum = timeInterval * netForce;
+                particles[particleIndex].position = initialPositions[particleIndex] + timeInterval *
+                    particles[particleIndex].Velocity(
                     particles[particleIndex].momentum + changeInMomentum / 2.0);
                 particles[particleIndex].momentum = initialMomenta[particleIndex] + changeInMomentum;
             }
         }
 
-        private void NotQuiteRK2(Time timeStep)
+        /// <summary>
+        /// Heun's method for numerical integration
+        /// </summary>
+        /// <param name="timeStep"></param>
+        private void HeunIntegration(Time timeStep)
         {
             List<Task> tasks = new List<Task>();
             // store temporary particle data for Runge-Kutta method
@@ -282,16 +288,16 @@ namespace Physics
             async Task CalculateRungeKuttaCoefficients(int particleIndex, int iterationNumber)
             {
                 displacements[particleIndex, iterationNumber] =
-                    timeStep * particles[particleIndex].velocity();
-                momenta[particleIndex, iterationNumber] = new Momentum();
+                    timeStep * particles[particleIndex].Velocity();
+                Force netForce = new Force();
                 foreach (Interaction interaction in particles[particleIndex].interactions)
-                    momenta[particleIndex, iterationNumber] +=
-                        timeStep * interaction.InteractionForce();
+                    netForce += interaction.InteractionForce();
+                momenta[particleIndex, iterationNumber] = timeStep * netForce;
             }
 
             async Task LinearUpdate(int particleIndex)
             {
-                particles[particleIndex].position += timeStep * particles[particleIndex].velocity(
+                particles[particleIndex].position += timeStep * particles[particleIndex].Velocity(
                     particles[particleIndex].momentum + momenta[particleIndex, 0] / 2.0);
                 particles[particleIndex].momentum += momenta[particleIndex, 0];
             }
@@ -312,81 +318,9 @@ namespace Physics
         /// <param name="timeStep"></param>
         public void Iterate(Time timeStep)
         {
-            NotQuiteRK2(timeStep); 
+            HeunIntegration(timeStep); 
+            //RK4Iterate(timeStep);
             // This seems to outperform the real Runge-Kutta method for the relationship between position and momentum
-        }
-    }
-
-    public class Particle
-    {
-        public Mass mass = new Mass();
-        public Displacement position = new Displacement(new List<double>() { 0.0, 0.0, 0.0 });
-        public Momentum momentum = new Momentum(new List<double>() { 0.0, 0.0, 0.0 });
-        public List<Interaction> interactions = new List<Interaction>();
-
-        public Particle (Mass mass)
-        {
-            this.mass = mass;
-        }
-        public Particle (Particle particle)
-        {
-            mass = particle.mass;
-            position = particle.position;
-            momentum = particle.momentum;
-            interactions = particle.interactions;
-        }
-        public Particle ()
-        {
-        }
-
-        public Velocity velocity() { return momentum / mass; }
-        public Velocity velocity(Momentum p) { return p / mass; }
-
-        public void Iterate(Time timeStep, Force force)
-        {
-            Momentum changeInMomentum = timeStep * force;
-
-            Displacement changeInPosition = timeStep * velocity(momentum + changeInMomentum / 2.0);
-
-            momentum += changeInMomentum;
-            position += changeInPosition;
-        }
-        public void Iterate(Time timeStep)
-        {
-            Force netForce = new Force();
-            foreach (Interaction interaction in interactions)
-                netForce += interaction.InteractionForce();
-            Iterate(timeStep, netForce);
-        }
-    }
-
-    // <desription> A CelestialBody is a Particle with 
-    // constructors to calculate position and momentum 
-    // given a phase angle and orbital properties. </description>
-    public class CelestialBody : Particle
-    {
-        public CelestialBody(double mass, double periapsis, double apoapsis, 
-            double phaseAngle = 0.0, double Mu = 1.327124400189E20)
-        {
-            this.mass = new Mass(mass);
-            // just calculate at apoapsis for now
-            this.position = 
-                new Displacement(new List<double>()
-                {
-                    apoapsis * Math.Cos(phaseAngle),
-                    apoapsis * Math.Sin(phaseAngle),
-                    0.0
-                });
-            double momentumAtApoapsis = mass * Math.Sqrt(Mu * (2.0 / apoapsis - 2.0 / (apoapsis + periapsis)));
-            if (double.IsNaN(momentumAtApoapsis))
-                momentumAtApoapsis = 0.0;
-            this.momentum = 
-                new Momentum(new List<double>()
-                {
-                    -momentumAtApoapsis * Math.Sin(phaseAngle),
-                    momentumAtApoapsis * Math.Cos(phaseAngle),
-                    0.0
-                });
         }
     }
 }
