@@ -10,4 +10,8 @@
     <None Remove="Examples\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Docker.DotNet" Version="3.125.2" />
+  </ItemGroup>
+
 </Project>

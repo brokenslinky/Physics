@@ -46,6 +46,12 @@ namespace Star_System
                 try
                 {
                     UpdatePlot(centricIndex);
+                    string tmp = $"{simulation.simulatedTime / (365.25 * Simulation.day):F0} years";
+                    if (tmp != year_label.Text)
+                    {
+                        year_label.Text = tmp;
+                        year_label.Refresh();
+                    }
                     DateTime time = DateTime.Now;
                     while (DateTime.Now < time.AddMilliseconds(delayTime))
                         Application.DoEvents();
@@ -57,13 +63,16 @@ namespace Star_System
         public void UpdatePlot(int centricIndex = 0)
         {
 
-            chart.Series["Series"].Points.Clear();
+            // chart.Series["Series"].Points.Clear();
             foreach (Particle body in simulation.system.particles)
             {
                 chart.Series["Series"].Points.AddXY(
                     body.position.values[0] - simulation.system.particles[centricIndex].position.values[0],
                     body.position.values[1] - simulation.system.particles[centricIndex].position.values[1]);
             }
+            while (chart.Series["Series"].Points.Count > 64 * simulation.system.particles.Count)
+                chart.Series["Series"].Points.RemoveAt(0);
+
             Application.DoEvents();
         }
 

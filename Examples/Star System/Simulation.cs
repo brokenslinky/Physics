@@ -11,6 +11,7 @@ namespace Star_System
         internal static readonly Time day = new Time(86400.0);
         internal static Time timeStep = day / 1.0;
 
+        public Time simulatedTime = new Time(0.0);
         public Physics.System system = new Physics.System();
         public List<CelestialBody> Bodies = new List<CelestialBody>();
 
@@ -78,7 +79,10 @@ namespace Star_System
 
             while(!end)
             {
-                try { system.Iterate(timeStep); }
+                try { 
+                    system.Iterate(timeStep);
+                    simulatedTime.value += timeStep.value;
+                }
                 catch(Exception ex) { MessageBox.Show(ex.Message); }
             }
         }
